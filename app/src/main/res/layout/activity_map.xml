@@ -5,14 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MapActivity">
-    
+
+    <FrameLayout
+        android:id="@+id/statusFragmentPane"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/mapFragmentPane">
+    </FrameLayout>
+
+
     <FrameLayout
         android:id="@+id/mapFragmentPane"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/statusFragmentPane"
         app:layout_constraintBottom_toTopOf="@+id/selectorFragmentPane">
     </FrameLayout>
     

@@ -1,10 +1,9 @@
 package mad.citysimulator.models;
 
-import java.io.Serializable;
 import java.util.Random;
 
 import mad.citysimulator.R;
-import mad.citysimulator.database.SettingsDbManager;
+import mad.citysimulator.database.GameStateDbManager;
 
 /**
  * Represents the overall map, and contains a map of MapElement objects (accessible using the
@@ -22,7 +21,14 @@ public class GameData
     private Settings settings;
     private MapElement[][] map;
     private int money;
+    private int recentIncome;
+    private int population;
     private int gameTime;
+    private double employmentRate;
+    private String cityName = "Perth";
+    private double temperature = 32.0;
+    private int nResidential = 0;
+    private int nCommercial = 0;
 
     private static final int WATER = R.drawable.ic_water;
     private static final int[] GRASS = {R.drawable.ic_grass1, R.drawable.ic_grass2,
@@ -30,25 +36,25 @@ public class GameData
 
     private static final Random rng = new Random();
 
-    protected GameData(Settings settings) {
-        setGameState(settings);
+    protected GameData(GameState gameState) {
+        setGameState(gameState);
     }
 
     public static GameData get() {
         if(instance == null)
         {
-            // Create new Game Data with default settings
-            instance = new GameData(new Settings());
+            // Create new Game Data with default game state
+            instance = new GameData(new GameState());
         }
         return instance;
     }
 
     // Setters
-    public void setGameState(Settings settings) {
-        this.settings = settings;
+    public void setGameState(GameState gameState) {
+        this.settings = gameState.getSettings();
         this.map = generateMap(settings.getMapHeight(), settings.getMapWidth());
-        this.money = settings.getMoney();
-        this.gameTime = settings.getGameTime();
+        this.money = gameState.getMoney();
+        this.gameTime = gameState.getGameTime();
         saveGameState();
     }
 
@@ -69,6 +75,17 @@ public class GameData
     public MapElement getElement(int i, int j) { return map[i][j]; }
     public int getMapHeight() { return settings.getMapHeight(); }
     public int getMapWidth() { return settings.getMapWidth(); }
+    public int getPopulation() {
+        this.population = settings.getFamilySize() * this.nResidential;
+        return population;
+    }
+    public int getRecentIncome() { return recentIncome; }
+    public double getEmploymentRate() {
+        //this.employmentRate = Math.min(1, nCommercial * settings.getShopSize() / getPopulation());
+        return employmentRate;
+    }
+    public String getCityName() { return cityName; }
+    public double getTemperature() { return temperature; }
 
     // Map stuff
     private static MapElement[][] generateMap(int height, int width)
@@ -205,5 +222,13 @@ public class GameData
         return id;
     }
 
-    private void saveGameState() { SettingsDbManager.get().updateSettings(this.settings); }
+    private void saveGameState() {
+        GameState gameState = new GameState(this.settings, this.money, this.gameTime);
+        GameStateDbManager.get().updateGameState(gameState);
+    }
+
+    public void updateSettings(Settings settings) {
+        this.settings = settings;
+        saveGameState();
+    }
 }

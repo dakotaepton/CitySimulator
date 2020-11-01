@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import mad.citysimulator.R;
-import mad.citysimulator.database.SettingsDbManager;
 import mad.citysimulator.fragments.SettingsFragment;
 import mad.citysimulator.interfaces.SettingClickListener;
 import mad.citysimulator.models.GameData;
@@ -43,7 +42,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingClickL
         settings.setMapWidth(width);
         settings.setMapHeight(height);
         settings.setInitialMoney(initialMoney);
-        GameData.get().setGameState(settings);
+        GameData.get().updateSettings(settings);
         // Create intent for back to title screen
         Intent intent = new Intent(this, TitleActivity.class);
         startActivity(intent);

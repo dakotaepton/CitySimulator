@@ -8,8 +8,9 @@ import android.view.View;
 import android.widget.Button;
 
 import mad.citysimulator.R;
-import mad.citysimulator.database.SettingsDbManager;
+import mad.citysimulator.database.GameStateDbManager;
 import mad.citysimulator.models.GameData;
+import mad.citysimulator.models.GameState;
 import mad.citysimulator.models.Settings;
 
 public class TitleActivity extends AppCompatActivity implements View.OnClickListener {
@@ -23,15 +24,20 @@ public class TitleActivity extends AppCompatActivity implements View.OnClickList
         mapBtn.setOnClickListener(this);
         settingsBtn.setOnClickListener(this);
 
-        // Default settings already stored in db
-        //Settings settings = new Settings();
 
         // Load DB Manager
-        SettingsDbManager.get().load(getApplicationContext());
-        //SettingsDbManager.get().addSettings(settings);
-        Settings settings = SettingsDbManager.get().getSavedSetting("DEFAULT");
+        GameStateDbManager.get().load(getApplicationContext());
+        GameState gameState = GameStateDbManager.get().getSavedState("DEFAULT");
 
-        GameData.get().setGameState(settings);
+        // If null no default save stored so make one
+        if(gameState == null) {
+            GameStateDbManager.get().addGameState(new GameState());
+            gameState = GameStateDbManager.get().getSavedState("DEFAULT");
+            GameData.get().setGameState(gameState);
+        }
+        else{
+            GameData.get().setGameState(gameState);
+        }
     }
 
 

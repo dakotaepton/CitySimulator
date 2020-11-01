@@ -1,13 +1,13 @@
 package mad.citysimulator.database;
 
-public class SettingsSchema {
+public class GameStateSchema {
     // Settings table
-    public static class SettingsTable {
+    public static class GameStateTable {
         // Table Name
-        public static final String NAME = "settings";
+        public static final String NAME = "game_state";
         // Column Names
         public static class Cols {
-            public static final String SAVE_NAME = "session_id";
+            public static final String SAVE_NAME = "save_name";
             public static final String MAP_WIDTH = "map_width";
             public static final String MAP_HEIGHT = "map_height";
             public static final String INITIAL_MONEY = "initial_money";

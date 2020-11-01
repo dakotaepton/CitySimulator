@@ -1,10 +1,5 @@
 package mad.citysimulator.models;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-
-import mad.citysimulator.database.SettingsDbHelper;
-
 public class Settings {
 
     // Game Setting Data
@@ -20,8 +15,6 @@ public class Settings {
     private int houseBuildingCost;
     private int commBuildingCost;
     private int roadBuildingCost;
-    private int money;
-    private int gameTime;
 
     // Constructor W/ Default Settings
     public Settings() {
@@ -37,14 +30,12 @@ public class Settings {
         this.houseBuildingCost = 100;
         this.commBuildingCost = 500;
         this.roadBuildingCost = 20;
-        this.money = this.initialMoney;
-        this.gameTime = 0;
     }
 
     // Alternate Constructor
-    public Settings(String saveName, int mapWidth, int mapHeight, int money, int initialMoney, int familySize,
+    public Settings(String saveName, int mapWidth, int mapHeight, int initialMoney, int familySize,
                     int shopSize, int salary, double taxRate, int serviceCost, int houseBuildingCost, int commBuildingCost,
-                    int roadBuildingCost, int gameTime) {
+                    int roadBuildingCost) {
         this.saveName = saveName;
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
@@ -57,8 +48,6 @@ public class Settings {
         this.commBuildingCost = commBuildingCost;
         this.roadBuildingCost = roadBuildingCost;
         this.initialMoney = initialMoney;
-        this.money = money;
-        this.gameTime = gameTime;
     }
 
     // Accessors
@@ -74,8 +63,6 @@ public class Settings {
     public int getHouseBuildingCost() { return houseBuildingCost; }
     public int getCommBuildingCost() { return commBuildingCost; }
     public int getRoadBuildingCost() { return roadBuildingCost; }
-    public int getMoney() { return money; }
-    public int getGameTime() { return gameTime; }
 
     // Mutator
     public void setSaveName(String saveName) { this.saveName = saveName; }
@@ -90,6 +77,4 @@ public class Settings {
     public void setHouseBuildingCost(int houseBuildingCost) { this.houseBuildingCost = houseBuildingCost; }
     public void setCommBuildingCost(int commBuildingCost) { this.commBuildingCost = commBuildingCost; }
     public void setRoadBuildingCost(int roadBuildingCost) { this.roadBuildingCost = roadBuildingCost; }
-    public void setMoney(int money) { this.money = money; }
-    public void setGameTime(int gameTime) { this.gameTime = gameTime ; }
 }
