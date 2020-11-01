@@ -11,6 +11,4 @@ public class Residential extends Structure{
     public String getStructureName() {
         return "Residential";
     }
-
-
 }

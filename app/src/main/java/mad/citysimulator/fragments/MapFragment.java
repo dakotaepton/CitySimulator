@@ -22,29 +22,18 @@ public class MapFragment extends Fragment {
     private GameData gameData;
 
     private RecyclerView recycView;
-    private RecyclerView.Adapter mAdaptor;
     private RecyclerView.LayoutManager layoutManager;
 
-    public MapFragment() {
-        // Required empty public constructor
-    }
-
-    public static SettingsFragment newInstance() {
-        SettingsFragment fragment = new SettingsFragment();
-        return fragment;
-    }
+    // Required empty public constructor
+    public MapFragment() {}
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.gameData = GameData.get();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup ui, Bundle bundle) {
-
-        View view = inflater.inflate(R.layout.fragment_map, ui, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
         recycView = (RecyclerView) view.findViewById(R.id.mapRecyclerView);
+        this.gameData = GameData.get();
         layoutManager = new GridLayoutManager(
                 getActivity(),
                 gameData.getMapHeight(),
@@ -52,7 +41,7 @@ public class MapFragment extends Fragment {
                 false);
 
         recycView.setLayoutManager(layoutManager);
-        mAdaptor = new MapRecycAdaptor();
+        MapRecycAdaptor mAdaptor = new MapRecycAdaptor();
         recycView.setAdapter(mAdaptor);
 
         return view;
@@ -62,18 +51,19 @@ public class MapFragment extends Fragment {
     //ADAPTOR
     private class MapRecycAdaptor extends RecyclerView.Adapter<MapViewHolder> {
 
-        public MapRecycAdaptor() {}
+        public MapRecycAdaptor() { }
 
         @Override
         public MapViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater li = LayoutInflater.from(getActivity()); // <-- Fragment method
-            return new MapViewHolder(li, parent);
+            View cellView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_map_cell, parent,false);
+            MapViewHolder vh = new MapViewHolder(cellView);
+            return vh;
         }
 
         @Override
         public void onBindViewHolder(MapViewHolder holder, int position) {
-            int row = position % GameData.get().getMapHeight();
-            int col = position / GameData.get().getMapHeight();
+            int row = position % gameData.getMapHeight();
+            int col = position / gameData.getMapHeight();
             MapElement element = gameData.getElement(row,col);
             holder.bind(element);
         }
@@ -95,10 +85,9 @@ public class MapFragment extends Fragment {
         private ImageView fullCell;
         private MapElement element;
 
-        public MapViewHolder(LayoutInflater li, ViewGroup parent) {
-            super( li.inflate(R.layout.fragment_map_cell, parent, false) );
-
-            int size = parent.getMeasuredHeight() / GameData.get().getMapHeight() + 1;
+        public MapViewHolder(View view) {
+            super(view);
+            int size = getView().getMeasuredHeight() / GameData.get().getMapHeight() + 1;
             ViewGroup.LayoutParams lp = itemView.getLayoutParams();
             lp.width = size;
             lp.height = size;

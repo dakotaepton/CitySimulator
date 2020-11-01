@@ -16,7 +16,7 @@ import mad.citysimulator.database.SettingsDbManager;
  * There is also a regenerate() method. The map is randomly-generated, and this method will invoke
  * the algorithm again to replace all the map data with a new randomly-generated map.
  */
-public class GameData implements Serializable
+public class GameData
 {
     private static GameData instance = null;
     private Settings settings;

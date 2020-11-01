@@ -95,9 +95,6 @@ public class MapElement
 
     // Mutators
     public void setStructure(Structure structure)  { this.structure = structure; }
-
     public void setOwnerName(String name) { this.ownerName = name; }
-
     public void setImage(Bitmap image) { this.image = image; }
-
 }

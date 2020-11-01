@@ -29,21 +29,15 @@ public class StructureData
         R.drawable.ic_road_nse, R.drawable.ic_road_nsw, R.drawable.ic_road_new, R.drawable.ic_road_sew,
         R.drawable.ic_tree1, R.drawable.ic_tree2, R.drawable.ic_tree3, R.drawable.ic_tree4};
 
-    private List<Structure> residentialList = Arrays.asList(new Structure[] {
-        new Residential(R.drawable.ic_building1),
-        new Residential(R.drawable.ic_building2),
-        new Residential(R.drawable.ic_building3),
-        new Residential(R.drawable.ic_building4),
-    });
-
-    private List<Structure> commercialList = Arrays.asList(new Structure[] {
+    private final List<Structure> structureList = Arrays.asList(
+            new Residential(R.drawable.ic_building1),
+            new Residential(R.drawable.ic_building2),
+            new Residential(R.drawable.ic_building3),
+            new Residential(R.drawable.ic_building4),
             new Commercial(R.drawable.ic_building5),
             new Commercial(R.drawable.ic_building6),
             new Commercial(R.drawable.ic_building7),
             new Commercial(R.drawable.ic_building8),
-    });
-
-    private List<Structure> roadList = Arrays.asList(new Structure[] {
             new Road(R.drawable.ic_road_ns),
             new Road(R.drawable.ic_road_ew),
             new Road(R.drawable.ic_road_nsew),
@@ -58,8 +52,8 @@ public class StructureData
             new Road(R.drawable.ic_road_nse),
             new Road(R.drawable.ic_road_nsw),
             new Road(R.drawable.ic_road_new),
-            new Road(R.drawable.ic_road_sew),
-    });
+            new Road(R.drawable.ic_road_sew)
+    );
 
     private static StructureData instance = null;
 
@@ -74,33 +68,9 @@ public class StructureData
 
     protected StructureData() {}
 
-    public Structure getResidential(int i)
-    {
-        return residentialList.get(i);
-    }
+    public Structure getStructure(int i) { return structureList.get(i); }
+    public int getNumStructures() {  return structureList.size(); }
+    public void add(Structure s) { structureList.add(0, s); }
+    public void remove(int i) { structureList.remove(i); }
 
-    public Structure getCommercial(int i)
-    {
-        return commercialList.get(i);
-    }
-
-    public Structure getRoad(int i)
-    {
-        return roadList.get(i);
-    }
-
-    public int residentialSize()
-    {
-        return residentialList.size();
-    }
-
-    public int commercialSize()
-    {
-        return commercialList.size();
-    }
-
-    public int roadSize()
-    {
-        return roadList.size();
-    }
 }
