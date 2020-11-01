@@ -8,17 +8,7 @@ public class Commercial extends Structure {
 
     // Structure abstract method
     @Override
-    String getStructureName() {
+    public String getStructureName() {
         return "Commercial";
-    }
-
-    @Override
-    int getImageId() {
-        return imageId;
-    }
-
-    @Override
-    void setImageId(int imageId) {
-        this.imageId = imageId;
     }
 }

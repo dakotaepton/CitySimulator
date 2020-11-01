@@ -1,5 +1,6 @@
 package mad.citysimulator.models;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import mad.citysimulator.R;
@@ -15,7 +16,7 @@ import mad.citysimulator.database.SettingsDbManager;
  * There is also a regenerate() method. The map is randomly-generated, and this method will invoke
  * the algorithm again to replace all the map data with a new randomly-generated map.
  */
-public class GameData
+public class GameData implements Serializable
 {
     private static GameData instance = null;
     private Settings settings;
@@ -50,6 +51,7 @@ public class GameData
         setMap(generateMap(settings.getMapHeight(), settings.getMapWidth()));
         saveGameState();
     }
+
     public void setMoney(int money) { this.money = money; }
     public void setGameTime(int gameTime) { this.gameTime = gameTime; }
     public void regenerateMap(int height, int width)  { this.map = generateMap(height, width); }
@@ -60,6 +62,8 @@ public class GameData
     public int getGameTime() { return gameTime; }
     public Settings getSettings() { return settings; }
     public MapElement getElement(int i, int j) { return map[i][j]; }
+    public int getMapHeight() { return settings.getMapHeight(); }
+    public int getMapWidth() { return settings.getMapWidth(); }
 
     // Map stuff
     private static MapElement[][] generateMap(int height, int width)

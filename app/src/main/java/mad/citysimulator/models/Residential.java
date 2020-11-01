@@ -8,17 +8,9 @@ public class Residential extends Structure{
 
     // Structure abstract method
     @Override
-    String getStructureName() {
+    public String getStructureName() {
         return "Residential";
     }
 
-    @Override
-    int getImageId() {
-        return imageId;
-    }
 
-    @Override
-    void setImageId(int imageId) {
-        this.imageId = imageId;
-    }
 }

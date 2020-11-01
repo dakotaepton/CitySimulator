@@ -24,7 +24,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mapFragmentPane"
-        app:layout_constraintBottom_toBottomnOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent">
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
