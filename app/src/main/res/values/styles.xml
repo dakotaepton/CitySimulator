@@ -7,4 +7,14 @@
         <item name="colorAccent">#000000</item>
     </style>
 
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/mypink</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">@color/myblack</item>
+        <!-- Used for the background -->
+        <item name="android:background">@color/myblue</item>
+    </style>
 </resources>

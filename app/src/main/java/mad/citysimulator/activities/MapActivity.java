@@ -17,23 +17,28 @@ public class MapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_map);
         FragmentManager fm = getSupportFragmentManager();
 
-        initMapFragment(fm);
-        initSelectorFragment(fm);
+        MapFragment mapFrag = initMapFragment(fm);
+        SelectorFragment selectorFrag = initSelectorFragment(fm);
+
+        mapFrag.setBuilderSelector(selectorFrag);
+        selectorFrag.setMapFragment(mapFrag);
     }
 
-    private void initMapFragment(FragmentManager fm) {
+    private MapFragment initMapFragment(FragmentManager fm) {
         MapFragment mapFrag = (MapFragment) fm.findFragmentById(R.id.mapRecyclerView);
         if(mapFrag == null) {
             mapFrag = new MapFragment();
             fm.beginTransaction().add(R.id.mapFragmentPane, mapFrag).commit();
         }
+        return mapFrag;
     }
 
-    private void initSelectorFragment(FragmentManager fm) {
+    private SelectorFragment initSelectorFragment(FragmentManager fm) {
         SelectorFragment selectorFrag = (SelectorFragment) fm.findFragmentById(R.id.selectorRecyclerView);
         if(selectorFrag == null) {
             selectorFrag = new SelectorFragment();
             fm.beginTransaction().add(R.id.selectorFragmentPane, selectorFrag).commit();
         }
+        return selectorFrag;
     }
 }

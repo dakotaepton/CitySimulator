@@ -10,7 +10,6 @@
         android:id="@+id/topLeft"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#00000000"
         app:layout_constraintBottom_toTopOf="@id/bottomLeft"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/topRight"
@@ -20,7 +19,6 @@
         android:id="@+id/bottomLeft"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#00000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/bottomRight"
@@ -31,7 +29,6 @@
         android:id="@+id/topRight"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#00000000"
         app:layout_constraintBottom_toTopOf="@id/bottomRight"
         app:layout_constraintLeft_toRightOf="@id/topLeft"
         app:layout_constraintRight_toRightOf="parent"
@@ -41,7 +38,6 @@
         android:id="@+id/bottomRight"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#00000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/bottomLeft"
         app:layout_constraintRight_toRightOf="parent"
@@ -49,14 +45,12 @@
 
     <ImageView
         android:id="@+id/fullCell"
-        android:layout_height="0dp"
         android:layout_width="0dp"
-        android:background="#00000000"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

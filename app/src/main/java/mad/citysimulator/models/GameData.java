@@ -46,9 +46,9 @@ public class GameData
     // Setters
     public void setGameState(Settings settings) {
         this.settings = settings;
-        setMoney(settings.getMoney());
-        setGameTime(settings.getGameTime());
-        setMap(generateMap(settings.getMapHeight(), settings.getMapWidth()));
+        this.map = generateMap(settings.getMapHeight(), settings.getMapWidth());
+        this.money = settings.getMoney();
+        this.gameTime = settings.getGameTime();
         saveGameState();
     }
 
@@ -56,6 +56,11 @@ public class GameData
     public void setGameTime(int gameTime) { this.gameTime = gameTime; }
     public void regenerateMap(int height, int width)  { this.map = generateMap(height, width); }
     public void setMap(MapElement[][] map) { this.map = map; }
+
+    public void setElement(int row, int col, MapElement element) {
+        map[row][col] = element;
+        saveGameState();
+    }
 
     // Getters
     public int getMoney() { return money; }
