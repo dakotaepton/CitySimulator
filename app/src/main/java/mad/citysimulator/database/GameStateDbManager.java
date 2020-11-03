@@ -4,11 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.google.gson.Gson;
+
 import java.util.HashMap;
+import java.util.List;
 
 import mad.citysimulator.models.GameState
 ;
 import mad.citysimulator.database.GameStateSchema.GameStateTable;
+import mad.citysimulator.models.MapElement;
 import mad.citysimulator.models.Settings;
 
 public class GameStateDbManager {
@@ -44,6 +48,7 @@ public class GameStateDbManager {
             cursor.moveToFirst();
             while(!cursor.isAfterLast()) {
                 GameState temp = cursor.getGameState();
+                System.out.println("YOu even saving anything?");
                 allSavedGameState.put(temp.getSettings().getSaveName(), temp);
                 cursor.moveToNext();
             }
@@ -81,13 +86,23 @@ public class GameStateDbManager {
     public GameState getSavedState(String saveName) { return allSavedGameState.get(saveName); }
 
     private ContentValues populateContentValues(GameState gameState) {
+        // CONVERT MapElement[][] TO JSON
+        //Gson g = new Gson();
+        //String mapJson = g.toJson(gameState.getMap());
         Settings settings = gameState.getSettings();
         ContentValues cv = new ContentValues();
         cv.put(GameStateTable.Cols.SAVE_NAME, settings.getSaveName());
+        cv.put(GameStateTable.Cols.CITY_NAME, settings.getCityName());
+        //cv.put(GameStateTable.Cols.MAP, mapJson);
         cv.put(GameStateTable.Cols.MAP_WIDTH, settings.getMapWidth());
         cv.put(GameStateTable.Cols.MAP_HEIGHT, settings.getMapHeight());
         cv.put(GameStateTable.Cols.MONEY, gameState.getMoney());
         cv.put(GameStateTable.Cols.INITIAL_MONEY, settings.getInitialMoney());
+        cv.put(GameStateTable.Cols.GAME_TIME, gameState.getGameTime());
+        return cv;
+    }
+}
+/*      FULL SETTINGS
         cv.put(GameStateTable.Cols.FAMILY_SIZE, settings.getFamilySize());
         cv.put(GameStateTable.Cols.SHOP_SIZE, settings.getShopSize());
         cv.put(GameStateTable.Cols.SALARY, settings.getSalary());
@@ -96,8 +111,5 @@ public class GameStateDbManager {
         cv.put(GameStateTable.Cols.HOUSE_BUILDING_COST, settings.getHouseBuildingCost());
         cv.put(GameStateTable.Cols.COMM_BUILDING_COST, settings.getCommBuildingCost());
         cv.put(GameStateTable.Cols.ROAD_BUILDING_COST, settings.getRoadBuildingCost());
-        cv.put(GameStateTable.Cols.GAME_TIME, gameState.getGameTime());
-        return cv;
-    }
 
-}
+ */

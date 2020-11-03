@@ -31,13 +31,10 @@ public class TitleActivity extends AppCompatActivity implements View.OnClickList
 
         // If null no default save stored so make one
         if(gameState == null) {
-            GameStateDbManager.get().addGameState(new GameState());
-            gameState = GameStateDbManager.get().getSavedState("DEFAULT");
-            GameData.get().setGameState(gameState);
+            gameState = new GameState();
+            GameStateDbManager.get().addGameState(gameState);
         }
-        else{
-            GameData.get().setGameState(gameState);
-        }
+        GameData.get().setGameState(gameState);
     }
 
 

@@ -4,6 +4,7 @@ public class Settings {
 
     // Game Setting Data
     private String saveName;
+    private String cityName;
     private int mapWidth;
     private int mapHeight;
     private int initialMoney;
@@ -19,6 +20,7 @@ public class Settings {
     // Constructor W/ Default Settings
     public Settings() {
         this.saveName = "DEFAULT";
+        this.cityName = "Default";
         this.mapWidth = 50;
         this.mapHeight = 10;
         this.initialMoney = 1000;
@@ -32,11 +34,29 @@ public class Settings {
         this.roadBuildingCost = 20;
     }
 
-    // Alternate Constructor
-    public Settings(String saveName, int mapWidth, int mapHeight, int initialMoney, int familySize,
+    // Alternate Constructor For Resume
+    public Settings(String saveName, String cityName, int mapWidth, int mapHeight, int initialMoney) {
+        this.saveName = saveName;
+        this.cityName = cityName;
+        this.mapWidth = mapWidth;
+        this.mapHeight = mapHeight;
+        this.initialMoney = initialMoney;
+        this.familySize = 4;
+        this.shopSize = 6;
+        this.salary = 10;
+        this.taxRate = 0.3;
+        this.serviceCost = 2;
+        this.houseBuildingCost = 100;
+        this.commBuildingCost = 500;
+        this.roadBuildingCost = 20;
+    }
+
+    // Full Alternate Constructor
+    public Settings(String saveName, String cityName, int mapWidth, int mapHeight, int initialMoney, int familySize,
                     int shopSize, int salary, double taxRate, int serviceCost, int houseBuildingCost, int commBuildingCost,
                     int roadBuildingCost) {
         this.saveName = saveName;
+        this.cityName = cityName;
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.familySize = familySize;
@@ -52,6 +72,7 @@ public class Settings {
 
     // Accessors
     public String getSaveName() { return saveName; }
+    public String getCityName() { return cityName; }
     public int getMapWidth() { return mapWidth; }
     public int getMapHeight() { return mapHeight; }
     public int getInitialMoney() { return initialMoney; }
@@ -66,6 +87,7 @@ public class Settings {
 
     // Mutator
     public void setSaveName(String saveName) { this.saveName = saveName; }
+    public void setCityName(String cityName) { this.cityName = cityName; }
     public void setMapWidth(int mapWidth) { this.mapWidth = mapWidth; }
     public void setMapHeight(int mapHeight) { this.mapHeight = mapHeight; }
     public void setInitialMoney(int initialMoney) { this.initialMoney = initialMoney; }

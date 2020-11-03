@@ -34,8 +34,8 @@ public class MapActivity extends AppCompatActivity {
             int gameTime = GameData.get().getGameTime();
             int money = GameData.get().getMoney();
             int income = GameData.get().getRecentIncome();
-            int population = GameData.get().getPopulation();
-            double employmentRate = GameData.get().getEmploymentRate();
+            int population = GameData.get().calcPopulation();
+            double employmentRate = GameData.get().calcEmploymentRate();
             double temp = GameData.get().getTemperature();
             String cityName = GameData.get().getCityName();
 

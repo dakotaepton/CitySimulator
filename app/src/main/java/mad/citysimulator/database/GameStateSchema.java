@@ -8,10 +8,18 @@ public class GameStateSchema {
         // Column Names
         public static class Cols {
             public static final String SAVE_NAME = "save_name";
+            public static final String CITY_NAME = "city_name";
+            //public static final String MAP = "map";
             public static final String MAP_WIDTH = "map_width";
             public static final String MAP_HEIGHT = "map_height";
             public static final String INITIAL_MONEY = "initial_money";
             public static final String MONEY = "money";
+            public static final String GAME_TIME = "game_time";
+        }
+    }
+}
+
+/*          FULL SETTINGS
             public static final String FAMILY_SIZE = "family_size";
             public static final String SHOP_SIZE = "shop_size";
             public static final String SALARY = "salary";
@@ -20,7 +28,4 @@ public class GameStateSchema {
             public static final String HOUSE_BUILDING_COST = "house_building_cost";
             public static final String COMM_BUILDING_COST = "comm_building_cost";
             public static final String ROAD_BUILDING_COST = "road_building_cost";
-            public static final String GAME_TIME = "game_time";
-        }
-    }
-}
+ */

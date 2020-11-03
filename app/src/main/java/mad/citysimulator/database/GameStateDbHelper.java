@@ -16,10 +16,21 @@ public class GameStateDbHelper extends SQLiteOpenHelper {
         String createQuery =
                 "CREATE TABLE " + GameStateTable.NAME + "(" +
                 GameStateTable.Cols.SAVE_NAME + " TEXT, " +
+                GameStateTable.Cols.CITY_NAME + " TEXT, " +
+                //GameStateTable.Cols.MAP + " TEXT, " +
                 GameStateTable.Cols.MAP_HEIGHT + " INTEGER, " +
                 GameStateTable.Cols.MAP_WIDTH + " INTEGER, " +
                 GameStateTable.Cols.MONEY + " INTEGER, " +
                 GameStateTable.Cols.INITIAL_MONEY + " INTEGER, " +
+                GameStateTable.Cols.GAME_TIME + " INTEGER)";
+                db.execSQL(createQuery);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int v1, int v2) {}
+}
+
+/*              FULL SETTINGS
                 GameStateTable.Cols.FAMILY_SIZE + " INTEGER, " +
                 GameStateTable.Cols.SHOP_SIZE + " INTEGER, " +
                 GameStateTable.Cols.SALARY + " INTEGER, " +
@@ -28,10 +39,4 @@ public class GameStateDbHelper extends SQLiteOpenHelper {
                 GameStateTable.Cols.HOUSE_BUILDING_COST + " INTEGER, " +
                 GameStateTable.Cols.COMM_BUILDING_COST + " INTEGER, " +
                 GameStateTable.Cols.ROAD_BUILDING_COST + " INTEGER, " +
-                GameStateTable.Cols.GAME_TIME + " INTEGER)";
-                db.execSQL(createQuery);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int v1, int v2) {}
-}
+ */

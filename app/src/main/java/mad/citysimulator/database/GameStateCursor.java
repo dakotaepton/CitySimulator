@@ -3,8 +3,14 @@ package mad.citysimulator.database;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
+import com.google.gson.Gson;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import mad.citysimulator.database.GameStateSchema.GameStateTable;
 import mad.citysimulator.models.GameState;
+import mad.citysimulator.models.MapElement;
 import mad.citysimulator.models.Settings;
 
 public class GameStateCursor extends CursorWrapper {
@@ -13,11 +19,25 @@ public class GameStateCursor extends CursorWrapper {
 
     public GameState getGameState() {
         String saveName = getString(getColumnIndex(GameStateTable.Cols.SAVE_NAME));
+        String cityName = getString(getColumnIndex(GameStateTable.Cols.CITY_NAME));
+        //String mapJson = getString(getColumnIndex(GameStateTable.Cols.MAP));
         int mapWidth = getInt(getColumnIndex(GameStateTable.Cols.MAP_WIDTH));
         int mapHeight = getInt(getColumnIndex(GameStateTable.Cols.MAP_HEIGHT));
         int money = getInt(getColumnIndex(GameStateTable.Cols.MONEY));
         int initialMoney = getInt(getColumnIndex(GameStateTable.Cols.INITIAL_MONEY));
-        int familySize = getInt(getColumnIndex(GameStateTable.Cols.FAMILY_SIZE));
+        int gameTime = getInt(getColumnIndex(GameStateTable.Cols.GAME_TIME));
+
+        Settings settings = new Settings(saveName, cityName, mapWidth, mapHeight, initialMoney);
+
+        // CONVERT MAP JSON TO MapElement[][]
+        //Gson g = new Gson();
+        //MapElement[][] map = g.fromJson(mapJson, MapElement[][].class);
+        MapElement[][] map = null;
+        return new GameState(settings, money, gameTime, map);
+    }
+}
+
+/*         int familySize = getInt(getColumnIndex(GameStateTable.Cols.FAMILY_SIZE));
         int shopSize = getInt(getColumnIndex(GameStateTable.Cols.SHOP_SIZE));
         int salary = getInt(getColumnIndex(GameStateTable.Cols.SALARY));
         double taxRate = getDouble(getColumnIndex(GameStateTable.Cols.TAX_RATE));
@@ -25,10 +45,5 @@ public class GameStateCursor extends CursorWrapper {
         int houseBuildingCost = getInt(getColumnIndex(GameStateTable.Cols.HOUSE_BUILDING_COST));
         int commBuildingCost = getInt(getColumnIndex(GameStateTable.Cols.COMM_BUILDING_COST));
         int roadBuildingCost = getInt(getColumnIndex(GameStateTable.Cols.ROAD_BUILDING_COST));
-        int gameTime = getInt(getColumnIndex(GameStateTable.Cols.GAME_TIME));
 
-        Settings settings = new Settings(saveName, mapWidth, mapHeight, initialMoney, familySize, shopSize, salary,
-                taxRate, serviceCost, houseBuildingCost, commBuildingCost, roadBuildingCost);
-        return new GameState(settings, money, gameTime);
-    }
-}
+ */

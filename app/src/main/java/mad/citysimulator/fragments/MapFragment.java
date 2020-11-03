@@ -151,8 +151,10 @@ public class MapFragment extends Fragment {
                     int position = getBindingAdapterPosition();
                     int row = position % GameData.get().getMapHeight();
                     int col = position / GameData.get().getMapHeight();
+                    selectedStructure.setRow(row);
+                    selectedStructure.setCol(col);
                     this.element.setStructure(selectedStructure);
-                    GameData.get().setElement(row, col, this.element);
+                    GameData.get().buildStructure(this.element);
                     adapter.notifyItemChanged(getBindingAdapterPosition());
                     //dataListener.onMapClick();
                     selectorListener.onBuild();
@@ -170,6 +172,7 @@ public class MapFragment extends Fragment {
                             })
                             .setNeutralButton("Demolish", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+                                    GameData.get().demolishStructure(element);
                                     element.setStructure(null);
                                     adapter.notifyItemChanged(getBindingAdapterPosition());
                                 }

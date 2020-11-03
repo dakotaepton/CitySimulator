@@ -1,5 +1,9 @@
 package mad.citysimulator.models;
 
+import com.google.gson.Gson;
+
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import mad.citysimulator.R;
@@ -20,15 +24,15 @@ public class GameData
     private static GameData instance = null;
     private Settings settings;
     private MapElement[][] map;
+    private List<Commercial> commercials;
+    private List<Residential> residentials;
+    private List<Road> roads;
     private int money;
     private int recentIncome;
-    private int population;
     private int gameTime;
-    private double employmentRate;
-    private String cityName = "Perth";
-    private double temperature = 32.0;
-    private int nResidential = 0;
-    private int nCommercial = 0;
+    private double temperature;
+    private int nResidential;
+    private int nCommercial;
 
     private static final int WATER = R.drawable.ic_water;
     private static final int[] GRASS = {R.drawable.ic_grass1, R.drawable.ic_grass2,
@@ -36,15 +40,24 @@ public class GameData
 
     private static final Random rng = new Random();
 
-    protected GameData(GameState gameState) {
-        setGameState(gameState);
+    // Default constructor
+    protected GameData() {
+        this.money = 0;
+        this.gameTime = 0;
+        this.nResidential = 0;
+        this.nCommercial = 0;
+        this.recentIncome = 0;
+        commercials = new LinkedList<>();
+        residentials = new LinkedList<>();
+        roads = new LinkedList<>();
+        // CHANGE THIS
+        this.temperature = 32.0;
     }
 
     public static GameData get() {
-        if(instance == null)
-        {
-            // Create new Game Data with default game state
-            instance = new GameData(new GameState());
+        if(instance == null) {
+            // Create new Game Data
+            instance = new GameData();
         }
         return instance;
     }
@@ -52,7 +65,12 @@ public class GameData
     // Setters
     public void setGameState(GameState gameState) {
         this.settings = gameState.getSettings();
-        this.map = generateMap(settings.getMapHeight(), settings.getMapWidth());
+        if(gameState.getMap() == null) {
+            this.map = generateMap(settings.getMapHeight(), settings.getMapWidth());
+        }
+        else {
+            this.map = gameState.getMap();
+        }
         this.money = gameState.getMoney();
         this.gameTime = gameState.getGameTime();
         saveGameState();
@@ -63,11 +81,6 @@ public class GameData
     public void regenerateMap(int height, int width)  { this.map = generateMap(height, width); }
     public void setMap(MapElement[][] map) { this.map = map; }
 
-    public void setElement(int row, int col, MapElement element) {
-        map[row][col] = element;
-        saveGameState();
-    }
-
     // Getters
     public int getMoney() { return money; }
     public int getGameTime() { return gameTime; }
@@ -75,17 +88,67 @@ public class GameData
     public MapElement getElement(int i, int j) { return map[i][j]; }
     public int getMapHeight() { return settings.getMapHeight(); }
     public int getMapWidth() { return settings.getMapWidth(); }
-    public int getPopulation() {
-        this.population = settings.getFamilySize() * this.nResidential;
+
+    public int getRecentIncome() { return recentIncome; }
+    public String getCityName() { return settings.getCityName(); }
+    public double getTemperature() { return temperature; }
+
+    public void buildStructure(MapElement element) {
+        Structure structure = element.getStructure();
+        if(structure.getStructureName() == "Residential") {
+            nResidential++;
+            residentials.add((Residential) element.getStructure());
+        }
+        else if (element.getStructure().getStructureName() == "Commercial") {
+            nCommercial++;
+            commercials.add((Commercial) element.getStructure());
+        }
+        else if (element.getStructure().getStructureName() == "Road") {
+            roads.add((Road) element.getStructure());
+        }
+        map[structure.getRow()][structure.getCol()] = element;
+        saveGameState();
+    }
+
+    public void demolishStructure(MapElement element) {
+        Structure structure = element.getStructure();
+        if(structure.getStructureName() == "Residential") {
+            nResidential--;
+            residentials.remove((Residential) element.getStructure());
+        }
+        else if (structure.getStructureName() == "Commercial") {
+            nCommercial--;
+            commercials.remove((Commercial) element.getStructure());
+        }
+        else if (structure.getStructureName() == "Road") {
+            roads.remove((Road) element.getStructure());
+        }
+        map[structure.getRow()][structure.getCol()] = element;
+        saveGameState();
+    }
+
+    public void updateSettings(Settings settings) {
+        this.settings = settings;
+        saveGameState();
+    }
+
+    public int calcPopulation() {
+        int population = settings.getFamilySize() * this.nResidential;
         return population;
     }
-    public int getRecentIncome() { return recentIncome; }
-    public double getEmploymentRate() {
-        //this.employmentRate = Math.min(1, nCommercial * settings.getShopSize() / getPopulation());
+
+    public double calcEmploymentRate() {
+        int employmentRate = 0;
+        if(calcPopulation() > 0) {
+            employmentRate = Math.min(1, nCommercial * settings.getShopSize() / calcPopulation());
+        }
         return employmentRate;
     }
-    public String getCityName() { return cityName; }
-    public double getTemperature() { return temperature; }
+
+    private void saveGameState() {
+        GameState gameState = new GameState(this.settings, this.money, this.gameTime, this.map);
+        GameStateDbManager.get().updateGameState(gameState);
+    }
 
     // Map stuff
     private static MapElement[][] generateMap(int height, int width)
@@ -186,6 +249,7 @@ public class GameData
                 }
             }
         }
+
         return map;
     }
 
@@ -220,15 +284,5 @@ public class GameData
             }
         }
         return id;
-    }
-
-    private void saveGameState() {
-        GameState gameState = new GameState(this.settings, this.money, this.gameTime);
-        GameStateDbManager.get().updateGameState(gameState);
-    }
-
-    public void updateSettings(Settings settings) {
-        this.settings = settings;
-        saveGameState();
     }
 }
