@@ -2,7 +2,11 @@ package mad.citysimulator.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,31 +19,42 @@ import mad.citysimulator.models.MapElement;
 
 public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText nameDetail;
-    TextView rowColDetail;
-    TextView typeDetail;
-    TextView thumbnailLabel;
-    ImageView thumbnailImage;
-    Button saveDetailsBtn;
+    // Camera app intent variables
+    private static final int REQUEST_THUMBNAIL = 1;
+    private Intent thumbnailPhotoIntent;
+
+    // Activity view elements
+    private EditText nameDetail;
+    private TextView rowColDetail;
+    private TextView typeDetail;
+    private TextView thumbnailLabel;
+    private ImageView thumbnailImage;
+    private Button saveDetailsBtn;
+
+    // Map element info
+    private MapElement element;
+    private int row;
+    private int col;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        // Get Row and Col values
-        int row = getIntent().getIntExtra("row", -1);
-        int col = getIntent().getIntExtra("col", -1);
-        // Get map element
-        MapElement element = GameData.get().getElement(row, col);
+        // Set Row and Col values from intent
+        this.row = getIntent().getIntExtra("row", -1);
+        this.col = getIntent().getIntExtra("col", -1);
+
+        // Get map element at that location
+        this.element = GameData.get().getElement(row, col);
 
         // Get view elements
-        nameDetail = findViewById(R.id.nameDetail);
-        rowColDetail = findViewById(R.id.rowColDetail);
-        typeDetail = findViewById(R.id.typeDetail);
-        thumbnailLabel = findViewById(R.id.thumbnailLabel);
-        thumbnailImage = findViewById(R.id.thumbnailImage);
-        saveDetailsBtn = findViewById(R.id.saveDetailsBtn);
+        this.nameDetail = findViewById(R.id.nameDetail);
+        this.rowColDetail = findViewById(R.id.rowColDetail);
+        this.typeDetail = findViewById(R.id.typeDetail);
+        this.thumbnailLabel = findViewById(R.id.thumbnailLabel);
+        this.thumbnailImage = findViewById(R.id.thumbnailImage);
+        this.saveDetailsBtn = findViewById(R.id.saveDetailsBtn);
 
         //Set onclick listeners
         thumbnailImage.setOnClickListener(this);
@@ -57,21 +72,31 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         }
         typeDetail.setText(element.getStructure().getStructureName());
 
-
+        // Set up thumbnail camera intent
+        this.thumbnailPhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
     }
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()) {
-            case R.id.thumbnailImage:
-                System.out.println("LAUNCH CAMERA APP");
-                break;
-            case R.id.thumbnailLabel:
-                System.out.println("LAUNCH CAMERA APP");
-                break;
-            case R.id.saveDetailsBtn:
-                System.out.println("Save " + nameDetail.getText());
-                break;
+        int clickedId = view.getId();
+        if (clickedId == R.id.thumbnailImage || clickedId == R.id.thumbnailLabel) {
+            startActivityForResult(thumbnailPhotoIntent, REQUEST_THUMBNAIL);
+        } else if (clickedId == R.id.saveDetailsBtn) {
+            element.setOwnerName(nameDetail.getText().toString());
+            GameData.get().updateElement(row, col, element);
+            Intent intent = new Intent(this, MapActivity.class);
+            startActivity(intent);
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
+        super.onActivityResult(requestCode, resultCode, resultIntent);
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_THUMBNAIL) {
+            Bitmap thumbnail = (Bitmap) resultIntent.getExtras().get("data");
+            element.setImage(thumbnail);
+            thumbnailImage.setImageBitmap(thumbnail);
+        }
+    }
+
 }

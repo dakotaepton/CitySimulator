@@ -29,19 +29,21 @@ public class SettingsActivity extends AppCompatActivity implements SettingClickL
             int curMapHeight = currentSettings.getMapHeight();
             int curMapWidth = currentSettings.getMapWidth();
             int curInitialMoney = currentSettings.getInitialMoney();
-            settingsFragment = SettingsFragment.newInstance(curMapWidth, curMapHeight, curInitialMoney);
+            String curCityName = currentSettings.getCityName();
+            settingsFragment = SettingsFragment.newInstance(curMapWidth, curMapHeight, curInitialMoney, curCityName);
             settingsFragment.setSettingClickListener(this);
             fm.beginTransaction().add(R.id.settingsFragmentPane, settingsFragment).commit();
         }
     }
 
     @Override
-    public void onSaveSettingClick(int width, int height, int initialMoney) {
+    public void onSaveSettingClick(int width, int height, int initialMoney, String cityName) {
         // Update current game data settings
         Settings settings = GameData.get().getSettings();
         settings.setMapWidth(width);
         settings.setMapHeight(height);
         settings.setInitialMoney(initialMoney);
+        settings.setCityName(cityName);
         GameData.get().updateSettings(settings);
         // Create intent for back to title screen
         Intent intent = new Intent(this, TitleActivity.class);

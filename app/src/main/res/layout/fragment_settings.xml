@@ -8,9 +8,25 @@
     android:background="@color/myblack">
 
     <TextView
+        android:id="@+id/cityNameLabel"
+        android:background="@drawable/textview_border_blue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:text="City Name"
+        android:textAllCaps="true"
+        android:textColor="@color/myblue"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toTopOf="@id/mapWidthLabel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/cityNameInput"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/mapWidthLabel"
         android:background="@drawable/textview_border_blue"
-        android:layout_width="250dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:fontFamily="sans-serif-black"
         android:gravity="center"
@@ -21,12 +37,12 @@
         app:layout_constraintBottom_toTopOf="@id/mapHeightLabel"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/mapWidthInput"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/cityNameLabel" />
 
     <TextView
         android:id="@+id/mapHeightLabel"
         android:background="@drawable/textview_border_blue"
-        android:layout_width="250dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:fontFamily="sans-serif-black"
         android:gravity="center"
@@ -43,7 +59,7 @@
     <TextView
         android:id="@+id/initialMoneyLabel"
         android:background="@drawable/textview_border_blue"
-        android:layout_width="250dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:fontFamily="sans-serif-black"
         android:gravity="center"
@@ -55,6 +71,21 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/initialMoneyInput"
         app:layout_constraintTop_toBottomOf="@id/mapHeightLabel" />
+
+    <EditText
+        android:id="@+id/cityNameInput"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/myblue"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="text"
+        android:textColor="@color/myblack"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toTopOf="@id/mapWidthInput"
+        app:layout_constraintLeft_toRightOf="@id/cityNameLabel"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/mapWidthInput"
@@ -69,7 +100,7 @@
         app:layout_constraintBottom_toTopOf="@id/mapHeightInput"
         app:layout_constraintLeft_toRightOf="@id/mapWidthLabel"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/cityNameInput" />
 
     <EditText
         android:id="@+id/mapHeightInput"

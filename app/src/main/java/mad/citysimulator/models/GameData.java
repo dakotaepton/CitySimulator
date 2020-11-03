@@ -1,7 +1,13 @@
 package mad.citysimulator.models;
 
+import android.net.Uri;
+import android.os.AsyncTask;
+
 import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -100,8 +106,6 @@ public class GameData
     public String getCityName() { return settings.getCityName(); }
     public double getTemperature() { return temperature; }
 
-
-
     public void incGameTime() {
         this.population = calcPopulation();
         this.employmentRate = 0;
@@ -158,6 +162,12 @@ public class GameData
     public void updateSettings(Settings settings) {
         this.settings = settings;
         saveGameState();
+    }
+
+    public void updateElement(int row, int col, MapElement element) {
+        if(this.map[row][col] != null) {
+            this.map[row][col] = element;
+        }
     }
 
     public int calcPopulation() {
@@ -343,6 +353,5 @@ public class GameData
         }
         return id;
     }
-
 
 }

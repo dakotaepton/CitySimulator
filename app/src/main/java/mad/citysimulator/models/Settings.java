@@ -20,7 +20,7 @@ public class Settings {
     // Constructor W/ Default Settings
     public Settings() {
         this.saveName = "DEFAULT";
-        this.cityName = "Default";
+        this.cityName = "Perth";
         this.mapWidth = 50;
         this.mapHeight = 10;
         this.initialMoney = 1000;

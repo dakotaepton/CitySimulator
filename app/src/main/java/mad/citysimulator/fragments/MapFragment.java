@@ -147,7 +147,12 @@ public class MapFragment extends Fragment {
             this.element = element;
             this.adapter = getBindingAdapter();
             if(element.getStructure() != null) {
-                fullCell.setImageResource(element.getStructure().getImageId());
+                if(element.getImage() != null) {
+                    fullCell.setImageBitmap(element.getImage());
+                }
+                else {
+                    fullCell.setImageResource(element.getStructure().getImageId());
+                }
             }
             topLeft.setImageResource(element.getNorthWest());
             topRight.setImageResource(element.getNorthEast());

@@ -1,12 +1,30 @@
 package mad.citysimulator.activities;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import mad.citysimulator.R;
 import mad.citysimulator.fragments.MapFragment;
@@ -19,6 +37,8 @@ import mad.citysimulator.models.GameData;
 public class MapActivity extends AppCompatActivity implements View.OnClickListener, MapClickListener,
         DetailsClickListener
 {
+
+    StatusFragment statusFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,21 +61,26 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
         mapFrag.setBuilderSelector(selectorFrag);
         selectorFrag.setMapFragment(mapFrag);
+
+        // Make API Weather call
+        // Have done it in here instead of the status fragment so that the API call only happens
+        // whenever the map activity is started rather than every time the status bar is updated
+        // from a game event as it seems silly making that many api calls.
+        new GetCurrentWeather(this).execute(GameData.get().getCityName());
     }
 
     private void initStatusFragment(FragmentManager fm) {
-        StatusFragment statusFrag = (StatusFragment) fm.findFragmentById(R.id.statusFragment);
+        statusFrag = (StatusFragment) fm.findFragmentById(R.id.statusFragment);
         if(statusFrag == null) {
             int gameTime = GameData.get().getGameTime();
             int money = GameData.get().getMoney();
             int income = GameData.get().getRecentIncome();
             int population = GameData.get().getPopulation();
             double employmentRate = GameData.get().getEmploymentRate();
-            double temp = GameData.get().getTemperature();
             String cityName = GameData.get().getCityName();
 
             statusFrag = StatusFragment.newInstance(gameTime, money, income, population,
-                    employmentRate, temp, cityName);
+                    employmentRate, cityName);
             fm.beginTransaction().add(R.id.statusFragmentPane, statusFrag).commit();
         }
     }
@@ -97,5 +122,85 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         intent.putExtra("row", row);
         intent.putExtra("col", col);
         startActivity(intent);
+    }
+
+    private class GetCurrentWeather extends AsyncTask<String,Void,Double> {
+
+        // Context for error modal
+        private Context context;
+        private String error;
+
+        // API Call Constants
+        private static final String API_KEY = "48803a2307760152462669e50e408dc8";
+        private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
+        private static final String MEASUREMENT_UNITS = "metric";
+
+        public GetCurrentWeather(Context context) {
+            this.context = context;
+            this.error = "";
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        @Override
+        protected Double doInBackground(String... cities) {
+            double temperature = 0;
+            for(String cityName : cities) {
+                String fullUrl = Uri.parse(BASE_URL)
+                        .buildUpon()
+                        .appendQueryParameter("q", cityName)
+                        .appendQueryParameter("appid", API_KEY)
+                        .appendQueryParameter("units", MEASUREMENT_UNITS)
+                        .build().toString();
+
+                URL url = null;
+                try {
+                    url = new URL(fullUrl);
+                } catch (MalformedURLException e) {
+                    error = "MALFORMED URL EXCEPTION:\n" + e;
+                }
+
+                HttpURLConnection conn = null;
+                try {
+                    conn = (HttpURLConnection) url.openConnection();
+                    if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                        throw new Exception("Something went wrong trying to get the current weather info for city: " + cityName);
+                    }
+                    else {
+                        String responseData = IOUtils.toString(conn.getInputStream(), StandardCharsets.UTF_8);
+                        System.out.println(responseData);
+                        JsonObject fullJsonObj = new JsonParser().parse(responseData).getAsJsonObject();
+                        JsonObject mainData = new JsonParser().parse(fullJsonObj.get("main").toString()).getAsJsonObject();
+                        temperature = Double.parseDouble(mainData.get("temp").toString());
+                    }
+                } catch (IOException e) {
+                   error = "UNABLE TO OPEN WEATHER API CONNECTION:\n" + e;
+                } catch (Exception e) {
+                    error = e.getMessage();
+                } finally {
+                    if(conn != null) { conn.disconnect(); }
+                }
+            }
+            return temperature;
+        }
+
+        @Override
+        protected void onPostExecute(Double temperature) {
+            if(error != "") {
+                apiErrorModal(error);
+            }
+            else if(statusFrag != null) {
+                statusFrag.setTemperature(temperature);
+            }
+        }
+
+        public void apiErrorModal(String message) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context,
+                    R.style.AlertDialogCustom));
+            builder.setTitle("API Weather Error!")
+                    .setMessage(message)
+                    .setPositiveButton("OK", null);
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 }

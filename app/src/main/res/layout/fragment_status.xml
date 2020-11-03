@@ -223,7 +223,7 @@
         android:background="@color/myblue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="23&#xb0;C"
+        android:text="0&#xb0;C"
         android:gravity="center"
         android:textSize="10sp"
 
