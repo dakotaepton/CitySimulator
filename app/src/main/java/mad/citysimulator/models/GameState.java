@@ -13,7 +13,6 @@ public class GameState {
     private int gameTime;
     private MapElement[][] map;
 
-
     // Default constructor
     public GameState() {
         this.settings = new Settings();

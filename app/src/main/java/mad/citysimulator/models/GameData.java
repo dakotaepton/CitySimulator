@@ -31,13 +31,9 @@ public class GameData
     private GameStateDbManager dbManager;
     private Settings settings;
     private MapElement[][] map;
-    private List<Commercial> commercials;
-    private List<Residential> residentials;
-    private List<Road> roads;
     private int money;
     private int recentIncome;
     private int gameTime;
-    private double temperature;
     private int nResidential;
     private int nCommercial;
     private int population;
@@ -58,11 +54,6 @@ public class GameData
         this.recentIncome = 0;
         this.employmentRate = 0;
         this.population = 0;
-        commercials = new LinkedList<>();
-        residentials = new LinkedList<>();
-        roads = new LinkedList<>();
-        // CHANGE THIS
-        this.temperature = 32.0;
     }
 
     public static GameData get() {
@@ -104,7 +95,6 @@ public class GameData
     public double getEmploymentRate() { return employmentRate; }
     public int getRecentIncome() { return recentIncome; }
     public String getCityName() { return settings.getCityName(); }
-    public double getTemperature() { return temperature; }
 
     public void incGameTime() {
         this.population = calcPopulation();
@@ -120,40 +110,47 @@ public class GameData
         this.gameTime++;
     }
 
-    public void buildStructure(MapElement element) {
+    public int buildStructure(MapElement element) {
+        int shortChanged = 0;
         Structure structure = element.getStructure();
-        if(structure.getCost() <= money) {
-            this.money -= structure.getCost();
-            switch (structure.getStructureName()) {
-                case "Residential":
+        switch (structure.getStructureName()) {
+            case "Residential":
+                shortChanged = settings.getHouseBuildingCost() - money;
+                if(shortChanged <= 0){
                     nResidential++;
-                    residentials.add((Residential) element.getStructure());
-                    break;
-                case "Commercial":
+                    map[structure.getRow()][structure.getCol()] = element;
+                    this.money -= settings.getHouseBuildingCost();
+                    saveGameState();
+                }
+                break;
+            case "Commercial":
+                shortChanged = settings.getCommBuildingCost() - money;
+                if(shortChanged <= 0){
                     nCommercial++;
-                    commercials.add((Commercial) element.getStructure());
-                    break;
-                case "Road":
-                    roads.add((Road) element.getStructure());
-                    break;
-            }
-            map[structure.getRow()][structure.getCol()] = element;
-            saveGameState();
+                    map[structure.getRow()][structure.getCol()] = element;
+                    this.money -= settings.getCommBuildingCost();
+                    saveGameState();
+                }
+                break;
+            case "Road":
+                shortChanged = settings.getRoadBuildingCost() - money;
+                if(shortChanged <= 0){
+                    map[structure.getRow()][structure.getCol()] = element;
+                    this.money -= settings.getRoadBuildingCost();
+                    saveGameState();
+                }
+                break;
         }
+        return shortChanged;
     }
 
     public void demolishStructure(MapElement element) {
         Structure structure = element.getStructure();
         if(structure.getStructureName() == "Residential") {
             nResidential--;
-            residentials.remove((Residential) element.getStructure());
         }
         else if (structure.getStructureName() == "Commercial") {
             nCommercial--;
-            commercials.remove((Commercial) element.getStructure());
-        }
-        else if (structure.getStructureName() == "Road") {
-            roads.remove((Road) element.getStructure());
         }
         map[structure.getRow()][structure.getCol()] = element;
         saveGameState();
@@ -307,13 +304,13 @@ public class GameData
                                     R.drawable.ic_coast_southwest, R.drawable.ic_coast_southwest_concave),
                             choose(waterS, waterE, waterSE,
                                     R.drawable.ic_coast_south, R.drawable.ic_coast_east,
-                                    R.drawable.ic_coast_southeast, R.drawable.ic_coast_southeast_concave),
-                            null);
+                                    R.drawable.ic_coast_southeast, R.drawable.ic_coast_southeast_concave)
+                    );
                 }
                 else
                 {
                     map[i][j] = new MapElement(
-                            false, WATER, WATER, WATER, WATER, null);
+                            false, WATER, WATER, WATER, WATER);
                 }
             }
         }

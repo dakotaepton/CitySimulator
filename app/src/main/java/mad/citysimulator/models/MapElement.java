@@ -42,14 +42,14 @@ public class MapElement
 
     // Constructor
     public MapElement(boolean buildable, int northWest, int northEast,
-                      int southWest, int southEast, Structure structure)
+                      int southWest, int southEast)
     {
         this.buildable = buildable;
         this.terrainNorthWest = northWest;
         this.terrainNorthEast = northEast;
         this.terrainSouthWest = southWest;
         this.terrainSouthEast = southEast;
-        this.structure = structure;
+        this.structure = null;
         this.image = null;
         this.ownerName = null;
     }

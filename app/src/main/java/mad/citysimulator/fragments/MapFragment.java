@@ -193,15 +193,16 @@ public class MapFragment extends Fragment {
                     alert.show();
                 }
                 else {
-                    int shortChanged = selectedStructure.getCost() - GameData.get().getMoney();
-                    // Returns true if player can afford to build
+                    MapElement tempElement = this.element;
+                    Structure tempStructure = selectedStructure;
+                    tempStructure.setRow(row);
+                    tempStructure.setCol(col);
+                    tempElement.setStructure(selectedStructure);
+                    // Returns 0 or greater if the player can afford
+                    int shortChanged = GameData.get().buildStructure(tempElement);
                     if(shortChanged <= 0) {
-                        selectedStructure.setRow(row);
-                        selectedStructure.setCol(col);
-                        this.element.setStructure(selectedStructure);
-                        GameData.get().buildStructure(this.element);
+                        this.element = tempElement;
                         adapter.notifyItemChanged(getBindingAdapterPosition());
-                        //dataListener.onMapClick();
                         notifyMapClickListeners();
                     }
                     else {

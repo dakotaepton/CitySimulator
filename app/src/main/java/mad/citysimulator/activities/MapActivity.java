@@ -167,7 +167,6 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
                     }
                     else {
                         String responseData = IOUtils.toString(conn.getInputStream(), StandardCharsets.UTF_8);
-                        System.out.println(responseData);
                         JsonObject fullJsonObj = new JsonParser().parse(responseData).getAsJsonObject();
                         JsonObject mainData = new JsonParser().parse(fullJsonObj.get("main").toString()).getAsJsonObject();
                         temperature = Double.parseDouble(mainData.get("temp").toString());

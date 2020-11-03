@@ -9,7 +9,4 @@ public class Commercial extends Structure {
     public String getStructureName() {
         return "Commercial";
     }
-
-    @Override
-    public int getCost() { return 200; }
 }

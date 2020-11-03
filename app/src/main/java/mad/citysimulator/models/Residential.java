@@ -9,7 +9,4 @@ public class Residential extends Structure{
     public String getStructureName() {
         return "Residential";
     }
-
-    @Override
-    public int getCost() { return 100; }
 }

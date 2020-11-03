@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,8 +48,7 @@ public class GameStateDbManager {
     }
 
     // Returns false if the proposed save name already exists in db
-    public boolean addGameState(GameState gameState
-) {
+    public boolean addGameState(GameState gameState) {
         boolean success = false;
         if(!allSavedGameState.containsKey(gameState.getSettings().getSaveName())) {
             allSavedGameState.put(gameState.getSettings().getSaveName(), gameState);
@@ -78,6 +78,8 @@ public class GameStateDbManager {
         // CONVERT MapElement[][] TO JSON
         //Gson g = new Gson();
         //String mapJson = g.toJson(gameState.getMap());
+        String mapJson = convertMapToJson(gameState.getMap());
+        System.out.println(mapJson);
         Settings settings = gameState.getSettings();
         ContentValues cv = new ContentValues();
         cv.put(GameStateTable.Cols.SAVE_NAME, settings.getSaveName());
@@ -89,6 +91,16 @@ public class GameStateDbManager {
         cv.put(GameStateTable.Cols.INITIAL_MONEY, settings.getInitialMoney());
         cv.put(GameStateTable.Cols.GAME_TIME, gameState.getGameTime());
         return cv;
+    }
+
+    private String convertMapToJson(MapElement[][] map) {
+        String json = "";
+        Gson g = new GsonBuilder().setPrettyPrinting().create();
+        json = g.toJson(map);
+        Gson gg = new Gson();
+        MapElement[][] newMap = gg.fromJson(json, MapElement[][].class);
+
+        return json;
     }
 }
 /*      FULL SETTINGS

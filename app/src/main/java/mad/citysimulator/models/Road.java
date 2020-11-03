@@ -9,9 +9,4 @@ public class Road extends Structure {
     public String getStructureName() {
         return "Road";
     }
-
-    @Override
-    public int getCost() { return 25; }
-
-
 }
