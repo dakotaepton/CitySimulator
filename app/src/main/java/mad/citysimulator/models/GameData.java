@@ -22,6 +22,7 @@ import mad.citysimulator.database.GameStateDbManager;
 public class GameData
 {
     private static GameData instance = null;
+    private GameStateDbManager dbManager;
     private Settings settings;
     private MapElement[][] map;
     private List<Commercial> commercials;
@@ -33,6 +34,8 @@ public class GameData
     private double temperature;
     private int nResidential;
     private int nCommercial;
+    private int population;
+    private double employmentRate;
 
     private static final int WATER = R.drawable.ic_water;
     private static final int[] GRASS = {R.drawable.ic_grass1, R.drawable.ic_grass2,
@@ -47,6 +50,8 @@ public class GameData
         this.nResidential = 0;
         this.nCommercial = 0;
         this.recentIncome = 0;
+        this.employmentRate = 0;
+        this.population = 0;
         commercials = new LinkedList<>();
         residentials = new LinkedList<>();
         roads = new LinkedList<>();
@@ -76,6 +81,7 @@ public class GameData
         saveGameState();
     }
 
+    public void setDbManager(GameStateDbManager dbManager) { this.dbManager = dbManager; }
     public void setMoney(int money) { this.money = money; }
     public void setGameTime(int gameTime) { this.gameTime = gameTime; }
     public void regenerateMap(int height, int width)  { this.map = generateMap(height, width); }
@@ -88,26 +94,48 @@ public class GameData
     public MapElement getElement(int i, int j) { return map[i][j]; }
     public int getMapHeight() { return settings.getMapHeight(); }
     public int getMapWidth() { return settings.getMapWidth(); }
-
+    public int getPopulation() { return population; }
+    public double getEmploymentRate() { return employmentRate; }
     public int getRecentIncome() { return recentIncome; }
     public String getCityName() { return settings.getCityName(); }
     public double getTemperature() { return temperature; }
 
+
+
+    public void incGameTime() {
+        this.population = calcPopulation();
+        this.employmentRate = 0;
+        if(population > 0) {
+            this.employmentRate = calcEmploymentRate();
+        }
+        int salary = settings.getSalary();
+        double taxRate = settings.getTaxRate();
+        int serviceCost = settings.getServiceCost();
+        this.recentIncome = (int) (population * (employmentRate * salary * taxRate - serviceCost));
+        this.money += recentIncome;
+        this.gameTime++;
+    }
+
     public void buildStructure(MapElement element) {
         Structure structure = element.getStructure();
-        if(structure.getStructureName() == "Residential") {
-            nResidential++;
-            residentials.add((Residential) element.getStructure());
+        if(structure.getCost() <= money) {
+            this.money -= structure.getCost();
+            switch (structure.getStructureName()) {
+                case "Residential":
+                    nResidential++;
+                    residentials.add((Residential) element.getStructure());
+                    break;
+                case "Commercial":
+                    nCommercial++;
+                    commercials.add((Commercial) element.getStructure());
+                    break;
+                case "Road":
+                    roads.add((Road) element.getStructure());
+                    break;
+            }
+            map[structure.getRow()][structure.getCol()] = element;
+            saveGameState();
         }
-        else if (element.getStructure().getStructureName() == "Commercial") {
-            nCommercial++;
-            commercials.add((Commercial) element.getStructure());
-        }
-        else if (element.getStructure().getStructureName() == "Road") {
-            roads.add((Road) element.getStructure());
-        }
-        map[structure.getRow()][structure.getCol()] = element;
-        saveGameState();
     }
 
     public void demolishStructure(MapElement element) {
@@ -145,9 +173,39 @@ public class GameData
         return employmentRate;
     }
 
+    // Checks whether a given map location is adjacent to a road
+    public boolean isAdjacentToRoad(int row, int col) {
+        boolean isAdjacent = false;
+        if(row != settings.getMapHeight()-1) {
+            Structure bottom = getElement(row+1, col).getStructure();
+            if(bottom != null) {
+                if(bottom.getStructureName() == "Road") { isAdjacent = true; }
+            }
+        }
+        if(row != 0) {
+            Structure top = getElement(row-1, col).getStructure();
+            if(top != null) {
+                if(top.getStructureName() == "Road") { isAdjacent = true; }
+            }
+        }
+        if(col != settings.getMapWidth()-1) {
+            Structure right = getElement(row, col+1).getStructure();
+            if(right != null) {
+                if(right.getStructureName() == "Road") { isAdjacent = true; }
+            }
+        }
+        if(col != 0) {
+            Structure left = getElement(row, col-1).getStructure();
+            if(left != null) {
+                if(left.getStructureName() == "Road") { isAdjacent = true; }
+            }
+        }
+        return isAdjacent;
+    }
+
     private void saveGameState() {
         GameState gameState = new GameState(this.settings, this.money, this.gameTime, this.map);
-        GameStateDbManager.get().updateGameState(gameState);
+        dbManager.updateGameState(gameState);
     }
 
     // Map stuff
@@ -285,4 +343,6 @@ public class GameData
         }
         return id;
     }
+
+
 }

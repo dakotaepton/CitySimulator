@@ -19,4 +19,5 @@ public abstract class Structure {
 
     // Abstract methods to extend
     public abstract String getStructureName();
+    public abstract int getCost();
 }

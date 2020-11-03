@@ -57,9 +57,23 @@
         android:text="Created by Dakota Epton"
         android:textColor="@color/myyellow"
         android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/resetBtn"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/settingBtn" />
+
+    <Button
+        android:id="@+id/resetBtn"
+        android:layout_width="600px"
+        android:layout_height="200px"
+        android:background="@color/mypink"
+        android:text="reset"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/devName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

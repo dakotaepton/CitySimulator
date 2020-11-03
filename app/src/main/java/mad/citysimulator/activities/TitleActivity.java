@@ -21,19 +21,22 @@ public class TitleActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_title);
         Button mapBtn = findViewById(R.id.mapBtn);
         Button settingsBtn = findViewById(R.id.settingBtn);
+        Button resetBtn = findViewById(R.id.resetBtn);
         mapBtn.setOnClickListener(this);
         settingsBtn.setOnClickListener(this);
-
+        resetBtn.setOnClickListener(this);
 
         // Load DB Manager
-        GameStateDbManager.get().load(getApplicationContext());
-        GameState gameState = GameStateDbManager.get().getSavedState("DEFAULT");
+        GameStateDbManager dbManager = new GameStateDbManager();
+        dbManager.load(getApplicationContext());
+        GameState gameState = dbManager.getSavedState("DEFAULT");
 
         // If null no default save stored so make one
         if(gameState == null) {
             gameState = new GameState();
-            GameStateDbManager.get().addGameState(gameState);
+            dbManager.addGameState(gameState);
         }
+        GameData.get().setDbManager(dbManager);
         GameData.get().setGameState(gameState);
     }
 
@@ -50,6 +53,15 @@ public class TitleActivity extends AppCompatActivity implements View.OnClickList
                 intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.resetBtn:
+                // Load DB Manager
+                GameStateDbManager dbManager = new GameStateDbManager();
+                dbManager.load(getApplicationContext());
+                GameState gameState = dbManager.getSavedState("DEFAULT");
+                dbManager.removeGameState(gameState);
+
+                intent = new Intent(this, TitleActivity.class);
+                startActivity(intent);
         }
     }
 }

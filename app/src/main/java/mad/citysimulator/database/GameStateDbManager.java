@@ -17,25 +17,15 @@ import mad.citysimulator.models.Settings;
 
 public class GameStateDbManager {
 
-    // instance
-    private static GameStateDbManager instance = null;
-
     // Map of {SAVE_NAME, GameState} to ensure save name uniqueness before even touching the db
     private HashMap<String, GameState> allSavedGameState;
 ;
     private SQLiteDatabase db;
 
     // Constructor
-    protected GameStateDbManager() {
+    public GameStateDbManager() {
         this.db = null;
         this.allSavedGameState = new HashMap<>();
-    }
-
-    public static GameStateDbManager get() {
-        if(instance == null) {
-            instance = new GameStateDbManager();
-        }
-        return instance;
     }
 
     public void load(Context context) {
@@ -48,7 +38,6 @@ public class GameStateDbManager {
             cursor.moveToFirst();
             while(!cursor.isAfterLast()) {
                 GameState temp = cursor.getGameState();
-                System.out.println("YOu even saving anything?");
                 allSavedGameState.put(temp.getSettings().getSaveName(), temp);
                 cursor.moveToNext();
             }

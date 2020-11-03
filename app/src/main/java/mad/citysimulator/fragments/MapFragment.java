@@ -1,6 +1,7 @@
 package mad.citysimulator.fragments;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -14,7 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import mad.citysimulator.R;
+import mad.citysimulator.activities.DetailsActivity;
+import mad.citysimulator.activities.SettingsActivity;
+import mad.citysimulator.interfaces.DetailsClickListener;
 import mad.citysimulator.interfaces.MapClickListener;
 import mad.citysimulator.models.GameData;
 import mad.citysimulator.models.MapElement;
@@ -22,17 +29,20 @@ import mad.citysimulator.models.Structure;
 
 public class MapFragment extends Fragment {
 
-
-
     private RecyclerView recycView;
     private RecyclerView.LayoutManager layoutManager;
 
     private SelectorFragment selector;
-    private MapClickListener selectorListener;
-    private MapClickListener dataListener;
+    private List<MapClickListener> mapClickListeners;
+    private DetailsClickListener detailsClickListener;
 
     // Required empty public constructor
     public MapFragment() {}
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,9 +64,25 @@ public class MapFragment extends Fragment {
     }
 
     public void setBuilderSelector(SelectorFragment selector) { this.selector = selector; }
-    public void setSelectorMapListener(MapClickListener listener) { this.selectorListener = listener; }
-    public void setDataMapListener(MapClickListener listener) { this.dataListener = listener; }
-    public void removeSelectorMapListener() { this.selectorListener = null; }
+
+    // Map click listener functions
+    public void addMapClickListener(MapClickListener listener) {
+        if(this.mapClickListeners == null) {
+            this.mapClickListeners = new LinkedList<>();
+        }
+        this.mapClickListeners.add(listener);
+    }
+    public void removeMapClickListener(MapClickListener listener) { this.mapClickListeners.remove(listener); }
+    public void notifyMapClickListeners() {
+        for(int i=0; i<mapClickListeners.size(); i++) {
+            mapClickListeners.get(i).onBuild();
+        }
+    }
+
+    // Details click listener
+    public void addDetailsClickListener(DetailsClickListener listener) {this.detailsClickListener = listener; }
+    public void removeDetailsClickListener() { this.detailsClickListener = null; }
+
 
     //=======================================================================================
     //ADAPTOR
@@ -137,27 +163,51 @@ public class MapFragment extends Fragment {
 
             // If user has a currently selected structure to build
             if(selectedStructure != null) {
+                // Get element position info
+                int position = getBindingAdapterPosition();
+                int row = position % GameData.get().getMapHeight();
+                int col = position / GameData.get().getMapHeight();
+                // Check if structure already exists at that spot or if the map element is not buildable
                 if(currStructure != null || !element.isBuildable()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(),
                             R.style.AlertDialogCustom));
                     builder.setTitle("Uh oh!")
                             .setMessage("You can't build there.")
                             .setPositiveButton("OK", null);
-
                     AlertDialog alert = builder.create();
                     alert.show();
                 }
-                else if(selectedStructure != null) {
-                    int position = getBindingAdapterPosition();
-                    int row = position % GameData.get().getMapHeight();
-                    int col = position / GameData.get().getMapHeight();
-                    selectedStructure.setRow(row);
-                    selectedStructure.setCol(col);
-                    this.element.setStructure(selectedStructure);
-                    GameData.get().buildStructure(this.element);
-                    adapter.notifyItemChanged(getBindingAdapterPosition());
-                    //dataListener.onMapClick();
-                    selectorListener.onBuild();
+                else if(!GameData.get().isAdjacentToRoad(row, col) &&
+                        selectedStructure.getStructureName() != "Road") {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(),
+                            R.style.AlertDialogCustom));
+                    builder.setTitle("Uh oh!")
+                            .setMessage("You gotta build a road next to that first.")
+                            .setPositiveButton("OK", null);
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+                else {
+                    int shortChanged = selectedStructure.getCost() - GameData.get().getMoney();
+                    // Returns true if player can afford to build
+                    if(shortChanged <= 0) {
+                        selectedStructure.setRow(row);
+                        selectedStructure.setCol(col);
+                        this.element.setStructure(selectedStructure);
+                        GameData.get().buildStructure(this.element);
+                        adapter.notifyItemChanged(getBindingAdapterPosition());
+                        //dataListener.onMapClick();
+                        notifyMapClickListeners();
+                    }
+                    else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(),
+                                R.style.AlertDialogCustom));
+                        builder.setTitle("Uh oh!")
+                                .setMessage("You don't have enough money to build that.\n(Need +$" + shortChanged + ")")
+                                .setPositiveButton("OK", null);
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
                 }
             }
             else {
@@ -167,7 +217,8 @@ public class MapFragment extends Fragment {
                     builder.setTitle("OPTIONS")
                             .setPositiveButton("See Details", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-
+                                    detailsClickListener.onDetailsClick(currStructure.getRow(),
+                                            currStructure.getCol());
                                 }
                             })
                             .setNeutralButton("Demolish", new DialogInterface.OnClickListener() {

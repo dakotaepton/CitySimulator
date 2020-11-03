@@ -11,12 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import mad.citysimulator.R;
-import mad.citysimulator.interfaces.BuilderClickListener;
 import mad.citysimulator.interfaces.MapClickListener;
 import mad.citysimulator.models.Structure;
 import mad.citysimulator.models.StructureData;
@@ -134,7 +132,7 @@ public class SelectorFragment extends Fragment {
                 selectedPos = currPos;
                 selectedStructure = structure;
                 adapter.notifyItemChanged(currPos);
-                mapFragment.setSelectorMapListener(this);
+                mapFragment.addMapClickListener(this);
             }
             // Select new option
             else if(oldPos != currPos) {
@@ -142,7 +140,7 @@ public class SelectorFragment extends Fragment {
                 selectedStructure = structure;
                 adapter.notifyItemChanged(oldPos);
                 adapter.notifyItemChanged(currPos);
-                mapFragment.setSelectorMapListener(this);
+                mapFragment.addMapClickListener(this);
             }
             // Deselect when pressed again
             else if(oldPos == currPos) {
@@ -158,7 +156,7 @@ public class SelectorFragment extends Fragment {
             selectedPos = -1;
             selectedStructure = null;
             adapter.notifyItemChanged(oldPos);
-            mapFragment.removeSelectorMapListener();
+            mapFragment.removeMapClickListener(this);
         }
     }
 }

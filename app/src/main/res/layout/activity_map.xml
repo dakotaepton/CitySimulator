@@ -39,7 +39,7 @@
         app:layout_constraintBottom_toTopOf="@+id/selectorFragmentPane"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mapFragmentPane"></Button>
+        app:layout_constraintTop_toBottomOf="@id/mapFragmentPane"/>
 
     <FrameLayout
         android:id="@+id/selectorFragmentPane"

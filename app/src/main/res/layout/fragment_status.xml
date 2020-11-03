@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
         android:gravity="center"
-        android:text="Time"
+        android:text="Days"
         android:textAllCaps="true"
         android:textColor="@color/myblue"
         android:textSize="10sp"
@@ -166,26 +166,25 @@
 
     <TextView
         android:id="@+id/employmentLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
         android:gravity="center"
         android:text="Employment"
         android:textAllCaps="true"
-        android:textSize="10sp"
-
-
         android:textColor="@color/myblue"
+
+
+        android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@id/employmentValue"
         app:layout_constraintLeft_toRightOf="@id/populationLabel"
         app:layout_constraintRight_toLeftOf="@id/temperatureLabel"
-        app:layout_constraintTop_toBottomOf="@+id/cityNameValue"
- />
+        app:layout_constraintTop_toBottomOf="@+id/cityNameValue" />
 
     <TextView
         android:id="@+id/employmentValue"
         android:background="@color/myblue"
-        android:layout_width="0dp"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="10sp"
