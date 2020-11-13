@@ -44,8 +44,9 @@ public class SettingsActivity extends AppCompatActivity implements SettingClickL
         settings.setMapHeight(height);
         settings.setInitialMoney(initialMoney);
         settings.setCityName(cityName);
+
         GameData.get().updateSettings(settings);
-        // Create intent for back to title screen
+        // Create intent for starting map activity
         Intent intent = new Intent(this, TitleActivity.class);
         startActivity(intent);
     }

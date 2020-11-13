@@ -23,7 +23,7 @@ public class Settings {
         this.cityName = "Perth";
         this.mapWidth = 50;
         this.mapHeight = 10;
-        this.initialMoney = 1000;
+        this.initialMoney = 10000;
         this.familySize = 4;
         this.shopSize = 6;
         this.salary = 10;

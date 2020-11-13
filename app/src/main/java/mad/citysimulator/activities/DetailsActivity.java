@@ -14,11 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import mad.citysimulator.R;
-import mad.citysimulator.models.Commercial;
 import mad.citysimulator.models.GameData;
 import mad.citysimulator.models.MapElement;
-import mad.citysimulator.models.Residential;
-import mad.citysimulator.models.Road;
 
 public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -75,12 +72,16 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         }
         // Determine type string
         String type = "";
-        if(element.getStructure() instanceof Road) {
-            type = "Road";
-        } else if(element.getStructure() instanceof Commercial) {
-            type = "Commercial";
-        } else if(element.getStructure() instanceof Residential) {
-            type = "Residential";
+        switch (element.getStructure().getStructureType()) {
+            case ROAD:
+                type = "Road";
+                break;
+            case RESIDENTIAL:
+                type = "Commercial";
+                break;
+            case COMMERCIAL:
+                type = "Residential";
+                break;
         }
         typeDetail.setText(type);
 
@@ -108,6 +109,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             Bitmap thumbnail = (Bitmap) resultIntent.getExtras().get("data");
             element.setImage(thumbnail);
             thumbnailImage.setImageBitmap(thumbnail);
+            GameData.get().updateElement(row, col, element);
         }
     }
 

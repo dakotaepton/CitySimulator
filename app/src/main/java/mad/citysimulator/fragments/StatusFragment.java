@@ -108,7 +108,9 @@ public class StatusFragment extends Fragment {
     }
 
     public void setTemperature(double temperature) {
-        temperatureValue.setText(Double.toString(temperature) + "\u2103");
+        if(temperatureValue != null) {
+            temperatureValue.setText(Double.toString(temperature) + "\u2103");
+        }
     }
 
 }

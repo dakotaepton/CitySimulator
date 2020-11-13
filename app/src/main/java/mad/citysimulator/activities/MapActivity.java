@@ -50,7 +50,9 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         currentTemp = 0.0;
         // Set activity as onclick listener for run day btn
         Button incTimeBtn = findViewById(R.id.incTimeBtn);
+        Button backBtn = findViewById(R.id.backBtn);
         incTimeBtn.setOnClickListener(this);
+        backBtn.setOnClickListener(this);
 
         FragmentManager fm = getSupportFragmentManager();
 
@@ -113,13 +115,26 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        GameData.get().incGameTime();
+        switch (view.getId()) {
+            case R.id.backBtn:
+                Intent intent = new Intent(this, TitleActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.incTimeBtn:
+                GameData.get().incGameTime();
+                FragmentManager fm = getSupportFragmentManager();
+                initStatusFragment(fm);
+        }
+    }
+
+    @Override
+    public void onBuild() {
         FragmentManager fm = getSupportFragmentManager();
         initStatusFragment(fm);
     }
 
     @Override
-    public void onBuild() {
+    public void onDemolish() {
         FragmentManager fm = getSupportFragmentManager();
         initStatusFragment(fm);
     }

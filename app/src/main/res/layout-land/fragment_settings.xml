@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settingsFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/myblack">
+
+    <TextView
+        android:id="@+id/cityNameLabel"
+        android:background="@drawable/textview_border_blue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:text="City Name"
+        android:textAllCaps="true"
+        android:textColor="@color/myblue"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toTopOf="@id/mapWidthLabel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/cityNameInput"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/mapWidthLabel"
+        android:background="@drawable/textview_border_blue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:text="Map Width"
+        android:textAllCaps="true"
+        android:textColor="@color/myblue"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toTopOf="@id/mapHeightLabel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/mapWidthInput"
+        app:layout_constraintTop_toBottomOf="@id/cityNameLabel" />
+
+    <TextView
+        android:id="@+id/mapHeightLabel"
+        android:background="@drawable/textview_border_blue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="Map Height"
+        android:textAllCaps="true"
+        android:textSize="23sp"
+        android:textColor="@color/myblue"
+        app:layout_constraintBottom_toTopOf="@id/initialMoneyLabel"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/mapHeightInput"
+        app:layout_constraintTop_toBottomOf="@id/mapWidthLabel" />
+
+    <TextView
+        android:id="@+id/initialMoneyLabel"
+        android:background="@drawable/textview_border_blue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:text="Initial Money"
+        android:textAllCaps="true"
+        android:textColor="@color/myblue"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/initialMoneyInput"
+        app:layout_constraintTop_toBottomOf="@id/mapHeightLabel" />
+
+    <EditText
+        android:id="@+id/cityNameInput"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/myblue"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="text"
+        android:textColor="@color/myblack"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toTopOf="@id/mapWidthInput"
+        app:layout_constraintLeft_toRightOf="@id/cityNameLabel"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/mapWidthInput"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/myblue"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:textColor="@color/myblack"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toTopOf="@id/mapHeightInput"
+        app:layout_constraintLeft_toRightOf="@id/mapWidthLabel"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cityNameInput" />
+
+    <EditText
+        android:id="@+id/mapHeightInput"
+        android:background="@color/myblue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:gravity="center"
+        android:textSize="23sp"
+        android:inputType="numberDecimal"
+        android:textColor="@color/myblack"
+        app:layout_constraintBottom_toTopOf="@id/initialMoneyInput"
+        app:layout_constraintLeft_toRightOf="@id/mapHeightLabel"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mapWidthInput" />
+
+    <EditText
+        android:id="@+id/initialMoneyInput"
+        android:background="@color/myblue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:gravity="center"
+        android:textSize="23sp"
+        android:inputType="numberDecimal"
+        android:textColor="@color/myblack"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/initialMoneyLabel"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mapHeightInput" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,12 +18,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import mad.citysimulator.R;
+import mad.citysimulator.activities.MapActivity;
 import mad.citysimulator.interfaces.DetailsClickListener;
 import mad.citysimulator.interfaces.MapClickListener;
 import mad.citysimulator.models.GameData;
+import mad.citysimulator.models.GameState;
 import mad.citysimulator.models.MapElement;
-import mad.citysimulator.models.Road;
 import mad.citysimulator.models.Structure;
+import mad.citysimulator.models.StructureType;
 
 public class MapFragment extends Fragment {
 
@@ -57,7 +59,7 @@ public class MapFragment extends Fragment {
         recycView.setLayoutManager(layoutManager);
         MapRecycAdaptor mAdaptor = new MapRecycAdaptor();
         recycView.setAdapter(mAdaptor);
-
+        System.out.println(GameData.get().getMapHeight() + "  "+ GameData.get().getMapWidth());
         return view;
     }
 
@@ -71,9 +73,13 @@ public class MapFragment extends Fragment {
         this.mapClickListeners.add(listener);
     }
     public void removeMapClickListener(MapClickListener listener) { this.mapClickListeners.remove(listener); }
-    public void notifyMapClickListeners() {
+    public void notifyMapClickListeners(String flag) {
         for(int i=0; i<mapClickListeners.size(); i++) {
-            mapClickListeners.get(i).onBuild();
+            if(flag == "BUILD") {
+                mapClickListeners.get(i).onBuild();
+            } else if (flag == "DEMOLISH") {
+                mapClickListeners.get(i).onDemolish();
+            }
         }
     }
 
@@ -181,7 +187,7 @@ public class MapFragment extends Fragment {
                     alert.show();
                 }
                 else if(!GameData.get().isAdjacentToRoad(row, col) &&
-                        (selectedStructure.getStructureType() != "Road")) {
+                        (selectedStructure.getStructureType() != StructureType.ROAD)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(),
                             R.style.AlertDialogCustom));
                     builder.setTitle("Uh oh!")
@@ -201,7 +207,7 @@ public class MapFragment extends Fragment {
                     if(shortChanged <= 0) {
                         this.element = tempElement;
                         adapter.notifyItemChanged(getBindingAdapterPosition());
-                        notifyMapClickListeners();
+                        notifyMapClickListeners("BUILD");
                     }
                     else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(),
@@ -227,9 +233,27 @@ public class MapFragment extends Fragment {
                             })
                             .setNeutralButton("Demolish", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    GameData.get().demolishStructure(element);
-                                    element.setStructure(null);
-                                    adapter.notifyItemChanged(getBindingAdapterPosition());
+                                    boolean safe = true;
+                                    if(element.getStructure().getStructureType() == StructureType.ROAD) {
+                                        int row = element.getStructure().getRow();
+                                        int col = element.getStructure().getCol();
+                                        if(GameData.get().isAdjacentToNonRoad(row, col)) {
+                                            safe = false;
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(),
+                                                    R.style.AlertDialogCustom));
+                                            builder.setTitle("Can't remove that!")
+                                                    .setMessage("There seems to be a building relying on that road, demolish that first")
+                                                    .setPositiveButton("OK", null);
+                                            AlertDialog alert = builder.create();
+                                            alert.show();
+                                        }
+                                    }
+                                    if(safe){
+                                        GameData.get().demolishStructure(element);
+                                        element.setStructure(null);
+                                        adapter.notifyItemChanged(getBindingAdapterPosition());
+                                        notifyMapClickListeners("DEMOLISH");
+                                    }
                                 }
                             });
                     AlertDialog alert = builder.create();

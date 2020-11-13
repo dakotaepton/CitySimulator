@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.MapActivity">
+
+
+
+    <FrameLayout
+        android:id="@+id/statusFragmentPane"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/mapFragmentPane">
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/mapFragmentPane"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintRight_toLeftOf="@id/incTimeBtn"
+        app:layout_constraintLeft_toRightOf="@+id/backBtn"
+        app:layout_constraintTop_toBottomOf="@id/statusFragmentPane"
+        app:layout_constraintBottom_toTopOf="@+id/selectorFragmentPane">
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/backBtn"
+        android:layout_width="75dp"
+        android:layout_height="0dp"
+        android:background="@color/myblack"
+        android:text="MENU"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/selectorFragmentPane"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/mapFragmentPane"
+        app:layout_constraintTop_toBottomOf="@id/statusFragmentPane"/>
+
+    <Button
+        android:id="@+id/incTimeBtn"
+        android:layout_width="75dp"
+        android:layout_height="0dp"
+        android:background="@color/mypink"
+        android:text="FAST FORWARD"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/selectorFragmentPane"
+        app:layout_constraintLeft_toRightOf="@+id/mapFragmentPane"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/statusFragmentPane"/>
+
+    <FrameLayout
+        android:id="@+id/selectorFragmentPane"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mapFragmentPane"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/textview_border_blue"
+        >
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

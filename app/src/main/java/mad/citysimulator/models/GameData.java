@@ -1,10 +1,11 @@
 package mad.citysimulator.models;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import mad.citysimulator.R;
-import mad.citysimulator.database.GameStateDbManager;
+import mad.citysimulator.database.DBManager;
 
 /**
  * Represents the overall map, and contains a map of MapElement objects (accessible using the
@@ -19,17 +20,12 @@ import mad.citysimulator.database.GameStateDbManager;
 public class GameData
 {
     private static GameData instance = null;
-    private GameStateDbManager dbManager;
+    private DBManager dbManager;
     private Settings settings;
     private MapElement[][] map;
-    private ArrayList<Road> roads;
-    private ArrayList<Residential> residentials;
-    private ArrayList<Commercial> commercials;
+    private ArrayList<Structure> structures;
     private int money;
-    private int recentIncome;
     private int gameTime;
-    private int population;
-    private double employmentRate;
 
     private static final int WATER = R.drawable.ic_water;
     private static final int[] GRASS = {R.drawable.ic_grass1, R.drawable.ic_grass2,
@@ -41,13 +37,9 @@ public class GameData
     protected GameData() {
         this.money = 0;
         this.gameTime = 0;
-        this.recentIncome = 0;
-        this.employmentRate = 0;
-        this.population = 0;
         this.map = null;
-        this.roads = new ArrayList<>();
-        this.residentials = new ArrayList<>();
-        this.commercials = new ArrayList<>();
+        this.structures = new ArrayList<>();
+        this.settings = new Settings();
     }
 
     public static GameData get() {
@@ -60,40 +52,21 @@ public class GameData
 
     // Setters
     public void setGameState(GameState gameState) {
-        this.settings = gameState.getSettings();
+        updateSettings(gameState.getSettings());
         if(gameState.getMap() == null) {
+            System.out.println(settings.getMapHeight() + "    " + settings.getMapWidth());
             this.map = generateMap(settings.getMapHeight(), settings.getMapWidth());
         }
         else {
             this.map = gameState.getMap();
         }
-        if(gameState.getRoads() != null) {
-            this.roads = gameState.getRoads();
-            for(Road road : roads) {
-                int row = road.getRow();
-                int col = road.getCol();
+        if(gameState.getStructures() != null) {
+            this.structures = gameState.getStructures();
+            for(Structure structure : structures) {
+                int row = structure.getRow();
+                int col = structure.getCol();
                 MapElement element = getElement(row, col);
-                element.setStructure(road);
-                map[row][col] = element;
-            }
-        }
-        if(gameState.getCommercials() != null) {
-            this.commercials = gameState.getCommercials();
-            for(Commercial comm : commercials) {
-                int row = comm.getRow();
-                int col = comm.getCol();
-                MapElement element = getElement(row, col);
-                element.setStructure(comm);
-                map[row][col] = element;
-            }
-        }
-        if(gameState.getResidentials() != null) {
-            this.residentials = gameState.getResidentials();
-            for(Residential resi : residentials) {
-                int row = resi.getRow();
-                int col = resi.getCol();
-                MapElement element = getElement(row, col);
-                element.setStructure(resi);
+                element.setStructure(structure);
                 map[row][col] = element;
             }
         }
@@ -102,7 +75,15 @@ public class GameData
         saveGameState();
     }
 
-    public void setDbManager(GameStateDbManager dbManager) { this.dbManager = dbManager; }
+    public void setImages(List<ImageHolder> images) {
+        for(ImageHolder holder : images) {
+            MapElement temp = map[holder.getRow()][holder.getCol()];
+            temp.setImage(holder.getImage());
+            map[holder.getRow()][holder.getCol()] = temp;
+        }
+    }
+
+    public void setDbManager(DBManager dbManager) { this.dbManager = dbManager; }
     public void setMoney(int money) { this.money = money; }
     public void setGameTime(int gameTime) { this.gameTime = gameTime; }
     public void regenerateMap(int height, int width)  { this.map = generateMap(height, width); }
@@ -115,83 +96,95 @@ public class GameData
     public MapElement getElement(int i, int j) { return map[i][j]; }
     public int getMapHeight() { return settings.getMapHeight(); }
     public int getMapWidth() { return settings.getMapWidth(); }
-    public int getPopulation() { return population; }
-    public double getEmploymentRate() { return employmentRate; }
-    public int getRecentIncome() { return recentIncome; }
+    public int getPopulation() { return calcPopulation(); }
+    public double getEmploymentRate() { return calcEmploymentRate()*100; }
+    public int getRecentIncome() { return calcRecentIncome(); }
     public String getCityName() { return settings.getCityName(); }
-    public int getNumResidential() { return residentials.size(); }
-    public int getNumCommercials() { return commercials.size(); }
+
+    public int getNumResidential() {
+        int numResidential = 0;
+        for(Structure structure : structures) {
+            if(structure.getStructureType() == StructureType.RESIDENTIAL) {
+                numResidential++;
+            }
+        }
+        return numResidential;
+    }
+
+    public int getNumCommercials() {
+        int numCommercial = 0;
+        for(Structure structure : structures) {
+            if(structure.getStructureType() == StructureType.COMMERCIAL) {
+                numCommercial++;
+            }
+        }
+        return numCommercial;
+    }
 
     public void incGameTime() {
-        this.population = calcPopulation();
-        this.employmentRate = 0;
-        if(population > 0) {
-            this.employmentRate = calcEmploymentRate();
+        if(calcPopulation() > 0) {
+            this.money += calcRecentIncome();
         }
-        int salary = settings.getSalary();
-        double taxRate = settings.getTaxRate();
-        int serviceCost = settings.getServiceCost();
-        this.recentIncome = (int) (population * (employmentRate * salary * taxRate - serviceCost));
-        this.money += recentIncome;
         this.gameTime++;
+        saveGameState();
     }
 
     public int buildStructure(MapElement element) {
         int shortChanged = 0;
         Structure structure = element.getStructure();
-        if(structure instanceof Residential) {
-            shortChanged = settings.getHouseBuildingCost() - money;
-            if(shortChanged <= 0) {
-                map[structure.getRow()][structure.getCol()] = element;
-                this.money -= settings.getHouseBuildingCost();
-                this.residentials.add((Residential) structure);
-                saveGameState();
-            }
-        }
-        else if(structure instanceof Commercial) {
-            shortChanged = settings.getCommBuildingCost() - money;
-            if(shortChanged <= 0){
-                map[structure.getRow()][structure.getCol()] = element;
-                this.money -= settings.getCommBuildingCost();
-                this.commercials.add((Commercial) structure);
-                saveGameState();
-            }
-        }
-        else if(structure instanceof Road) {
-            shortChanged = settings.getRoadBuildingCost() - money;
-            if(shortChanged <= 0){
-                map[structure.getRow()][structure.getCol()] = element;
-                this.money -= settings.getRoadBuildingCost();
-                this.roads.add((Road) structure);
-                saveGameState();
-            }
+        switch (structure.getStructureType()) {
+            case ROAD:
+                shortChanged = settings.getRoadBuildingCost() - money;
+                if(shortChanged <= 0){
+                    map[structure.getRow()][structure.getCol()] = element;
+                    this.money -= settings.getRoadBuildingCost();
+                    this.structures.add(structure);
+                    saveGameState();
+                }
+                break;
+            case RESIDENTIAL:
+                shortChanged = settings.getHouseBuildingCost() - money;
+                if(shortChanged <= 0) {
+                    map[structure.getRow()][structure.getCol()] = element;
+                    this.money -= settings.getHouseBuildingCost();
+                    this.structures.add(structure);
+                    saveGameState();
+                }
+                break;
+            case COMMERCIAL:
+                shortChanged = settings.getCommBuildingCost() - money;
+                if(shortChanged <= 0){
+                    map[structure.getRow()][structure.getCol()] = element;
+                    this.money -= settings.getCommBuildingCost();
+                    this.structures.add(structure);
+                    saveGameState();
+                }
+                break;
         }
         return shortChanged;
     }
 
     public void demolishStructure(MapElement element) {
         Structure structure = element.getStructure();
-        if(structure instanceof Residential) {
-            residentials.remove(structure);
-        }
-        else if (structure instanceof Commercial) {
-            commercials.remove(structure);
-        }
-        else if (structure instanceof Road) {
-            roads.remove(structure);
-        }
+        structures.remove(structure);
+        element.setStructure(null);
         map[structure.getRow()][structure.getCol()] = element;
         saveGameState();
     }
 
     public void updateSettings(Settings settings) {
         this.settings = settings;
+        this.map = generateMap(settings.getMapHeight(), settings.getMapWidth());
         saveGameState();
     }
 
     public void updateElement(int row, int col, MapElement element) {
         if(this.map[row][col] != null) {
             this.map[row][col] = element;
+        }
+        // If element has an image save it.
+        if(element.getImage() != null) {
+            saveImage(element);
         }
         saveGameState();
     }
@@ -202,11 +195,20 @@ public class GameData
     }
 
     public double calcEmploymentRate() {
-        int employmentRate = 0;
+        double employmentRate = 0;
         if(calcPopulation() > 0) {
-            employmentRate = Math.min(1, getNumCommercials() * settings.getShopSize() / calcPopulation());
+            employmentRate = Math.min(1.0, ((double) getNumCommercials() *
+                    (double) settings.getShopSize()) / ((double) calcPopulation()));
         }
         return employmentRate;
+    }
+
+    public int calcRecentIncome() {
+        int salary = settings.getSalary();
+        double taxRate = settings.getTaxRate();
+        int serviceCost = settings.getServiceCost();
+        int income = (int) (getPopulation() * (calcEmploymentRate() * salary * taxRate - serviceCost));
+        return income;
     }
 
     // Checks whether a given map location is adjacent to a road
@@ -217,18 +219,47 @@ public class GameData
         int colRight = col + 1;
         int colLeft = col - 1;
 
-        for(Road road : roads) {
-            int roadCol = road.getCol();
-            int roadRow = road.getRow();
-            System.out.println(roadCol + " " + roadRow);
-            // Above Case
-            if(roadCol == col && roadRow == rowAbove) { isAdjacent = true; }
-            // Below Case
-            if(roadCol == col && roadRow == rowBelow) { isAdjacent = true; }
-            // Right Case
-            if(roadCol == colRight && roadRow == row) { isAdjacent = true; }
-            // Left Case
-            if(roadCol == colLeft && roadRow == row) { isAdjacent = true; }
+        for(Structure structure : structures) {
+            if(structure.getStructureType() == StructureType.ROAD) {
+                int structureCol = structure.getCol();
+                int structureRow = structure.getRow();
+                System.out.println(structureCol + " " + structureRow);
+                // Above Case
+                if(structureCol == col && structureRow == rowAbove) { isAdjacent = true; }
+                // Below Case
+                if(structureCol == col && structureRow == rowBelow) { isAdjacent = true; }
+                // Right Case
+                if(structureCol == colRight && structureRow == row) { isAdjacent = true; }
+                // Left Case
+                if(structureCol == colLeft && structureRow == row) { isAdjacent = true; }
+            }
+        }
+
+        return isAdjacent;
+    }
+
+    public boolean isAdjacentToNonRoad(int row, int col) {
+        boolean isAdjacent = false;
+        int rowAbove = row - 1;
+        int rowBelow = row + 1;
+        int colRight = col + 1;
+        int colLeft = col - 1;
+
+        for(Structure structure : structures) {
+            if(structure.getStructureType() == StructureType.COMMERCIAL ||
+                    structure.getStructureType() == StructureType.RESIDENTIAL) {
+                int structureCol = structure.getCol();
+                int structureRow = structure.getRow();
+                System.out.println(structureCol + " " + structureRow);
+                // Above Case
+                if(structureCol == col && structureRow == rowAbove) { isAdjacent = true; }
+                // Below Case
+                if(structureCol == col && structureRow == rowBelow) { isAdjacent = true; }
+                // Right Case
+                if(structureCol == colRight && structureRow == row) { isAdjacent = true; }
+                // Left Case
+                if(structureCol == colLeft && structureRow == row) { isAdjacent = true; }
+            }
         }
 
         return isAdjacent;
@@ -236,8 +267,16 @@ public class GameData
 
     private void saveGameState() {
         GameState gameState = new GameState(this.settings, this.money, this.gameTime, this.map,
-                this.roads, this.residentials, this.commercials);
+                this.structures);
         dbManager.updateGameState(gameState);
+    }
+
+    private void saveImage(MapElement element) {
+        Structure structure = element.getStructure();
+        int row = structure.getRow();
+        int col = structure.getCol();
+        ImageHolder holder = new ImageHolder(row, col, element.getImage());
+        dbManager.addImageHolder(holder);
     }
 
     // Map stuff

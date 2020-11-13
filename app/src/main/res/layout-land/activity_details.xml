@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.DetailsActivity">
+
+    <EditText
+        android:id="@+id/nameDetail"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="@color/mypink"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:textColor="@color/myblack"
+        android:textSize="21sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/rowColDetailLabel"
+        android:background="@drawable/textview_border_blue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:text="Row, Column"
+        android:textAllCaps="true"
+        android:textColor="@color/myblue"
+        android:textSize="21sp"
+        app:layout_constraintBottom_toTopOf="@id/rowColDetail"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/typeDetailLabel"
+        app:layout_constraintTop_toBottomOf="@id/nameDetail" />
+
+    <TextView
+        android:id="@+id/typeDetailLabel"
+        android:background="@drawable/textview_border_blue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="Type"
+        android:textAllCaps="true"
+        android:textSize="21sp"
+        android:textColor="@color/myblue"
+        app:layout_constraintBottom_toTopOf="@id/typeDetail"
+        app:layout_constraintLeft_toRightOf="@id/rowColDetailLabel"
+        app:layout_constraintRight_toLeftOf="@id/thumbnailLabel"
+        app:layout_constraintTop_toBottomOf="@id/nameDetail" />
+
+    <TextView
+        android:id="@+id/thumbnailLabel"
+        android:background="@drawable/textview_border_blue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:text="Thumbnail\nPress to upload"
+        android:textAllCaps="true"
+        android:textColor="@color/myblue"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/thumbnailImage"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/typeDetailLabel"
+        app:layout_constraintTop_toBottomOf="@id/nameDetail" />
+
+    <TextView
+        android:id="@+id/rowColDetail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/myblue"
+        android:gravity="center"
+        android:textColor="@color/myblack"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toTopOf="@id/saveDetailsBtn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/typeDetail"
+        app:layout_constraintTop_toBottomOf="@id/rowColDetailLabel" />
+
+    <TextView
+        android:id="@+id/typeDetail"
+        android:background="@color/myblue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textSize="23sp"
+        android:textColor="@color/myblack"
+        app:layout_constraintBottom_toTopOf="@id/saveDetailsBtn"
+        app:layout_constraintLeft_toRightOf="@id/rowColDetail"
+        app:layout_constraintRight_toLeftOf="@id/thumbnailImage"
+        app:layout_constraintTop_toBottomOf="@id/typeDetailLabel" />
+
+    <ImageView
+        android:id="@+id/thumbnailImage"
+        android:background="@color/myblue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textSize="23sp"
+        android:textColor="@color/myblack"
+        app:layout_constraintBottom_toTopOf="@id/saveDetailsBtn"
+        app:layout_constraintLeft_toRightOf="@id/typeDetail"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/thumbnailLabel" />
+
+    <Button
+        android:id="@+id/saveDetailsBtn"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="@color/mypink"
+        android:textColor="@color/white"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package mad.citysimulator.fragments;
 
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -16,11 +17,9 @@ import android.widget.TextView;
 
 import mad.citysimulator.R;
 import mad.citysimulator.interfaces.MapClickListener;
-import mad.citysimulator.models.Commercial;
-import mad.citysimulator.models.Residential;
-import mad.citysimulator.models.Road;
 import mad.citysimulator.models.Structure;
 import mad.citysimulator.models.StructureData;
+import mad.citysimulator.models.StructureType;
 
 
 public class SelectorFragment extends Fragment {
@@ -28,15 +27,31 @@ public class SelectorFragment extends Fragment {
     private RecyclerView recycView;
     private RecyclerView.LayoutManager layoutManager;
 
+    SelectRecycAdaptor mAdaptor;
     private MapFragment mapFragment;
     private Structure selectedStructure;
     private int selectedPos = -1;
-
+    public int layoutDirection;
 
     public SelectorFragment() {}
 
     @Override
-    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        int orientation = getActivity().getResources().getConfiguration().orientation;
+        if( orientation == Configuration.ORIENTATION_PORTRAIT) {
+            layoutDirection = LinearLayoutManager.HORIZONTAL;
+        }
+        else {
+            layoutDirection = LinearLayoutManager.VERTICAL;
+        }
+        layoutManager = new LinearLayoutManager(
+                getActivity(),
+                LinearLayoutManager.HORIZONTAL,
+                false);
+
+        mAdaptor = new SelectRecycAdaptor();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,14 +59,9 @@ public class SelectorFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_selector, container, false);
         recycView = (RecyclerView) view.findViewById(R.id.selectorRecyclerView);
-        layoutManager = new LinearLayoutManager(
-                getActivity(),
-                LinearLayoutManager.HORIZONTAL,
-                false);
-
         recycView.setLayoutManager(layoutManager);
-        SelectRecycAdaptor mAdaptor = new SelectRecycAdaptor();
         recycView.setAdapter(mAdaptor);
+
 
         return view;
     }
@@ -103,31 +113,21 @@ public class SelectorFragment extends Fragment {
         public void bind(Structure structure) {
             this.structure = structure;
             listImage.setImageResource(structure.getImageId());
-            String structureName = "";
-            if(structure instanceof Residential) {
-                listText.setTextColor(Color.parseColor("#FFFFFFFF"));
-                structureName = "Residential";
-            } else if(structure instanceof Commercial) {
-                listText.setTextColor(Color.parseColor("#ff206e"));
-                structureName = "Commercial";
-            } else if(structure instanceof Road) {
-                listText.setTextColor(Color.parseColor("#fbff12"));
-                structureName = "Road";
-            }
+
+            String structureName = structure.getName();
             listText.setText(structureName);
-            /*
-            String structureName = structure.getStructureType();
-            switch(structureName) {
-                case "Residential":
+            switch (structure.getStructureType()) {
+                case ROAD:
                     listText.setTextColor(Color.parseColor("#FFFFFFFF"));
                     break;
-                case "Commercial":
+                case RESIDENTIAL:
                     listText.setTextColor(Color.parseColor("#ff206e"));
                     break;
-                case "Road":
+                case COMMERCIAL:
                     listText.setTextColor(Color.parseColor("#fbff12"));
                     break;
-            }*/
+            }
+
             if(selectedPos == getBindingAdapterPosition()) {
                 layout.setBackgroundColor(Color.parseColor("#BCFF9800"));
             } else {
@@ -173,5 +173,11 @@ public class SelectorFragment extends Fragment {
             adapter.notifyItemChanged(oldPos);
             mapFragment.removeMapClickListener(this);
         }
+
+        // Left purposely empty to allow for future proofing as I want to play around with this
+        //  app a bit in the holidays
+        @Override
+        public void onDemolish() {}
+
     }
 }
