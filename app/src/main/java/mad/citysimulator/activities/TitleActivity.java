@@ -15,19 +15,21 @@ import mad.citysimulator.models.Settings;
 
 public class TitleActivity extends AppCompatActivity implements View.OnClickListener {
 
+    GameStateDbManager dbManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_title);
-        Button mapBtn = findViewById(R.id.mapBtn);
+        Button mapBtn = findViewById(R.id.resumeBtn);
         Button settingsBtn = findViewById(R.id.settingBtn);
-        Button resetBtn = findViewById(R.id.resetBtn);
+        Button resetBtn = findViewById(R.id.newGameBtn);
         mapBtn.setOnClickListener(this);
         settingsBtn.setOnClickListener(this);
         resetBtn.setOnClickListener(this);
 
         // Load DB Manager
-        GameStateDbManager dbManager = new GameStateDbManager();
+        dbManager = new GameStateDbManager();
         dbManager.load(getApplicationContext());
         GameState gameState = dbManager.getSavedState("DEFAULT");
 
@@ -45,7 +47,7 @@ public class TitleActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         Intent intent = null;
         switch (view.getId()) {
-            case R.id.mapBtn:
+            case R.id.resumeBtn:
                 intent = new Intent(this, MapActivity.class);
                 startActivity(intent);
                 break;
@@ -53,14 +55,13 @@ public class TitleActivity extends AppCompatActivity implements View.OnClickList
                 intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.resetBtn:
+            case R.id.newGameBtn:
                 // Load DB Manager
-                GameStateDbManager dbManager = new GameStateDbManager();
                 dbManager.load(getApplicationContext());
                 GameState gameState = dbManager.getSavedState("DEFAULT");
                 dbManager.removeGameState(gameState);
-
-                intent = new Intent(this, TitleActivity.class);
+                System.out.println(gameState);
+                intent = new Intent(this, MapActivity.class);
                 startActivity(intent);
         }
     }

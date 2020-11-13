@@ -7,14 +7,20 @@ import android.database.sqlite.SQLiteDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import mad.citysimulator.models.Commercial;
 import mad.citysimulator.models.GameState
 ;
 import mad.citysimulator.database.GameStateSchema.GameStateTable;
 import mad.citysimulator.models.MapElement;
+import mad.citysimulator.models.Residential;
+import mad.citysimulator.models.Road;
 import mad.citysimulator.models.Settings;
+import mad.citysimulator.models.Structure;
 
 public class GameStateDbManager {
 
@@ -75,16 +81,20 @@ public class GameStateDbManager {
     public GameState getSavedState(String saveName) { return allSavedGameState.get(saveName); }
 
     private ContentValues populateContentValues(GameState gameState) {
-        // CONVERT MapElement[][] TO JSON
-        //Gson g = new Gson();
-        //String mapJson = g.toJson(gameState.getMap());
+        // Convert map data to Json string for storage
         String mapJson = convertMapToJson(gameState.getMap());
-        System.out.println(mapJson);
+        String roadJson = convertRoadsToJson(gameState.getRoads());
+        String commJson = convertCommercialsToJson(gameState.getCommercials());
+        String resiJson = convertResidentialsToJson(gameState.getResidentials());
         Settings settings = gameState.getSettings();
+
         ContentValues cv = new ContentValues();
         cv.put(GameStateTable.Cols.SAVE_NAME, settings.getSaveName());
         cv.put(GameStateTable.Cols.CITY_NAME, settings.getCityName());
-        //cv.put(GameStateTable.Cols.MAP, mapJson);
+        cv.put(GameStateTable.Cols.MAP, mapJson);
+        cv.put(GameStateTable.Cols.ROADS, roadJson);
+        cv.put(GameStateTable.Cols.COMMERCIALS, commJson);
+        cv.put(GameStateTable.Cols.RESIDENTIALS, resiJson);
         cv.put(GameStateTable.Cols.MAP_WIDTH, settings.getMapWidth());
         cv.put(GameStateTable.Cols.MAP_HEIGHT, settings.getMapHeight());
         cv.put(GameStateTable.Cols.MONEY, gameState.getMoney());
@@ -93,13 +103,33 @@ public class GameStateDbManager {
         return cv;
     }
 
-    private String convertMapToJson(MapElement[][] map) {
-        String json = "";
-        Gson g = new GsonBuilder().setPrettyPrinting().create();
-        json = g.toJson(map);
-        Gson gg = new Gson();
-        MapElement[][] newMap = gg.fromJson(json, MapElement[][].class);
+    private String convertRoadsToJson(ArrayList<Road> roads) {
+        Gson g = new Gson();
+        Road[] roadArray = new Road[roads.size()];
+        roadArray = roads.toArray(roadArray);
+        String roadJson = g.toJson(roadArray);
+        return roadJson;
+    }
 
+    private String convertCommercialsToJson(ArrayList<Commercial> commercials) {
+        Gson g = new Gson();
+        Commercial[] commArray = new Commercial[commercials.size()];
+        commArray = commercials.toArray(commArray);
+        String commJson = g.toJson(commArray);
+        return commJson;
+    }
+
+    private String convertResidentialsToJson(ArrayList<Residential> residentials) {
+        Gson g = new Gson();
+        Residential[] resiArray = new Residential[residentials.size()];
+        resiArray = residentials.toArray(resiArray);
+        String resiJson = g.toJson(resiArray);
+        return resiJson;
+    }
+
+    private String convertMapToJson(MapElement[][] map) {
+        Gson g = new Gson();
+        String json = g.toJson(map);
         return json;
     }
 }

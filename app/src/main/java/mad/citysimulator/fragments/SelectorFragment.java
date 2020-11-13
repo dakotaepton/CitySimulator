@@ -16,6 +16,9 @@ import android.widget.TextView;
 
 import mad.citysimulator.R;
 import mad.citysimulator.interfaces.MapClickListener;
+import mad.citysimulator.models.Commercial;
+import mad.citysimulator.models.Residential;
+import mad.citysimulator.models.Road;
 import mad.citysimulator.models.Structure;
 import mad.citysimulator.models.StructureData;
 
@@ -100,8 +103,20 @@ public class SelectorFragment extends Fragment {
         public void bind(Structure structure) {
             this.structure = structure;
             listImage.setImageResource(structure.getImageId());
-            String structureName = structure.getStructureName();
+            String structureName = "";
+            if(structure instanceof Residential) {
+                listText.setTextColor(Color.parseColor("#FFFFFFFF"));
+                structureName = "Residential";
+            } else if(structure instanceof Commercial) {
+                listText.setTextColor(Color.parseColor("#ff206e"));
+                structureName = "Commercial";
+            } else if(structure instanceof Road) {
+                listText.setTextColor(Color.parseColor("#fbff12"));
+                structureName = "Road";
+            }
             listText.setText(structureName);
+            /*
+            String structureName = structure.getStructureType();
             switch(structureName) {
                 case "Residential":
                     listText.setTextColor(Color.parseColor("#FFFFFFFF"));
@@ -112,7 +127,7 @@ public class SelectorFragment extends Fragment {
                 case "Road":
                     listText.setTextColor(Color.parseColor("#fbff12"));
                     break;
-            }
+            }*/
             if(selectedPos == getBindingAdapterPosition()) {
                 layout.setBackgroundColor(Color.parseColor("#BCFF9800"));
             } else {

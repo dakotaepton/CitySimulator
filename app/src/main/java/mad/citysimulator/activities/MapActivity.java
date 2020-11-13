@@ -25,6 +25,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import mad.citysimulator.R;
 import mad.citysimulator.fragments.MapFragment;
@@ -39,12 +41,13 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
 {
 
     StatusFragment statusFrag;
+    Double currentTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
+        currentTemp = 0.0;
         // Set activity as onclick listener for run day btn
         Button incTimeBtn = findViewById(R.id.incTimeBtn);
         incTimeBtn.setOnClickListener(this);
@@ -63,10 +66,15 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
         selectorFrag.setMapFragment(mapFrag);
 
         // Make API Weather call
-        // Have done it in here instead of the status fragment so that the API call only happens
-        // whenever the map activity is started rather than every time the status bar is updated
-        // from a game event as it seems silly making that many api calls.
-        new GetCurrentWeather(this).execute(GameData.get().getCityName());
+        //  reloads temperature on status fragment every 30 seconds
+        Timer timer = new Timer();
+        TimerTask getTemp = new TimerTask() {
+            @Override
+            public void run() {
+                new GetCurrentWeather(getParent()).execute(GameData.get().getCityName());
+            }
+        };
+        timer.scheduleAtFixedRate(getTemp, 0l, (30 * 1000));
     }
 
     private void initStatusFragment(FragmentManager fm) {
@@ -80,7 +88,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             String cityName = GameData.get().getCityName();
 
             statusFrag = StatusFragment.newInstance(gameTime, money, income, population,
-                    employmentRate, cityName);
+                    employmentRate, cityName, currentTemp);
             fm.beginTransaction().add(R.id.statusFragmentPane, statusFrag).commit();
         }
     }
@@ -189,6 +197,7 @@ public class MapActivity extends AppCompatActivity implements View.OnClickListen
             }
             else if(statusFrag != null) {
                 statusFrag.setTemperature(temperature);
+                currentTemp = temperature;
             }
         }
 

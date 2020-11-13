@@ -17,7 +17,10 @@ public class GameStateDbHelper extends SQLiteOpenHelper {
                 "CREATE TABLE " + GameStateTable.NAME + "(" +
                 GameStateTable.Cols.SAVE_NAME + " TEXT, " +
                 GameStateTable.Cols.CITY_NAME + " TEXT, " +
-                //GameStateTable.Cols.MAP + " TEXT, " +
+                GameStateTable.Cols.MAP + " TEXT, " +
+                GameStateTable.Cols.ROADS + " TEXT, " +
+                GameStateTable.Cols.COMMERCIALS + " TEXT, " +
+                GameStateTable.Cols.RESIDENTIALS + " TEXT, " +
                 GameStateTable.Cols.MAP_HEIGHT + " INTEGER, " +
                 GameStateTable.Cols.MAP_WIDTH + " INTEGER, " +
                 GameStateTable.Cols.MONEY + " INTEGER, " +

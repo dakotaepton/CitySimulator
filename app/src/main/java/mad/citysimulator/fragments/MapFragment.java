@@ -1,7 +1,6 @@
 package mad.citysimulator.fragments;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -19,12 +18,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import mad.citysimulator.R;
-import mad.citysimulator.activities.DetailsActivity;
-import mad.citysimulator.activities.SettingsActivity;
 import mad.citysimulator.interfaces.DetailsClickListener;
 import mad.citysimulator.interfaces.MapClickListener;
 import mad.citysimulator.models.GameData;
 import mad.citysimulator.models.MapElement;
+import mad.citysimulator.models.Road;
 import mad.citysimulator.models.Structure;
 
 public class MapFragment extends Fragment {
@@ -183,7 +181,7 @@ public class MapFragment extends Fragment {
                     alert.show();
                 }
                 else if(!GameData.get().isAdjacentToRoad(row, col) &&
-                        selectedStructure.getStructureName() != "Road") {
+                        (selectedStructure.getStructureType() != "Road")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(),
                             R.style.AlertDialogCustom));
                     builder.setTitle("Uh oh!")

@@ -45,6 +45,7 @@ public class StatusFragment extends Fragment {
     private int population;
     private String cityName;
     private double employment;
+    private double temperature;
 
     TextView temperatureValue;
 
@@ -52,7 +53,7 @@ public class StatusFragment extends Fragment {
     public StatusFragment() {}
 
     public static StatusFragment newInstance(int gameTime, int money, int recentIncome, int population,
-                                             double employment, String cityName) {
+                                             double employment, String cityName, double temperature) {
         StatusFragment fragment = new StatusFragment();
         Bundle args = new Bundle();
         args.putInt(GAME_TIME, gameTime);
@@ -61,6 +62,7 @@ public class StatusFragment extends Fragment {
         args.putInt(POPULATION, population);
         args.putString(CITY_NAME, cityName);
         args.putDouble(EMPLOYMENT, employment);
+        args.putDouble(TEMPERATURE, temperature);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,6 +77,7 @@ public class StatusFragment extends Fragment {
             population = getArguments().getInt(POPULATION);
             cityName = getArguments().getString(CITY_NAME);
             employment = getArguments().getDouble(EMPLOYMENT);
+            temperature = getArguments().getDouble(TEMPERATURE);
         }
     }
 
@@ -99,6 +102,7 @@ public class StatusFragment extends Fragment {
         incomeValue.setText("$" + Integer.toString(recentIncome));
         populationValue.setText(Integer.toString(population));
         cityNameValue.setText(cityName);
+        setTemperature(temperature);
 
         return v;
     }

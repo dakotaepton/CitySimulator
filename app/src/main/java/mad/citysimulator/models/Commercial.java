@@ -2,11 +2,13 @@ package mad.citysimulator.models;
 
 public class Commercial extends Structure {
 
-    public Commercial(int imageId) { this.imageId = imageId; }
+    public Commercial(int imageId) {
+        this.imageId = imageId;
+        this.name = "Commercial";
+    }
 
-    // Structure abstract method
     @Override
-    public String getStructureName() {
+    public String getStructureType() {
         return "Commercial";
     }
 }

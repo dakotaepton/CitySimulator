@@ -16,24 +16,38 @@
         android:text="City Simulator!"
         android:textColor="@color/myblue"
         android:textSize="50dp"
-        app:layout_constraintBottom_toTopOf="@id/mapBtn"
+        app:layout_constraintBottom_toTopOf="@id/newGameBtn"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/mapBtn"
+        android:id="@+id/newGameBtn"
         android:layout_width="600px"
         android:layout_height="200px"
         android:background="@color/mypink"
-        android:text="Map"
+        android:text="New Game"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/resumeBtn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/landingTitle" />
+
+    <Button
+        android:id="@+id/resumeBtn"
+        android:layout_width="600px"
+        android:layout_height="200px"
+        android:background="@color/mypink"
+        android:text="Resume"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/settingBtn"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/landingTitle" />
+        app:layout_constraintTop_toBottomOf="@id/newGameBtn" />
 
     <Button
         android:id="@+id/settingBtn"
@@ -47,7 +61,7 @@
         app:layout_constraintBottom_toTopOf="@id/devName"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mapBtn" />
+        app:layout_constraintTop_toBottomOf="@id/resumeBtn" />
 
     <TextView
         android:id="@+id/devName"
@@ -57,23 +71,11 @@
         android:text="Created by Dakota Epton"
         android:textColor="@color/myyellow"
         android:textSize="22dp"
-        app:layout_constraintBottom_toTopOf="@id/resetBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/settingBtn" />
 
-    <Button
-        android:id="@+id/resetBtn"
-        android:layout_width="600px"
-        android:layout_height="200px"
-        android:background="@color/mypink"
-        android:text="reset"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/devName" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

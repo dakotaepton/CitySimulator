@@ -86,7 +86,7 @@ public class MapElement
     // If no owner name set, return the structures default name
     public String getOwnerName() {
         String name = "";
-        if(ownerName == null) { name = structure.getStructureName(); }
+        if(ownerName == null) { name = structure.getName(); }
         else { name = ownerName; }
         return name;
     }

@@ -14,8 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import mad.citysimulator.R;
+import mad.citysimulator.models.Commercial;
 import mad.citysimulator.models.GameData;
 import mad.citysimulator.models.MapElement;
+import mad.citysimulator.models.Residential;
+import mad.citysimulator.models.Road;
 
 public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -70,7 +73,16 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         else {
             thumbnailImage.setImageResource(element.getStructure().getImageId());
         }
-        typeDetail.setText(element.getStructure().getStructureName());
+        // Determine type string
+        String type = "";
+        if(element.getStructure() instanceof Road) {
+            type = "Road";
+        } else if(element.getStructure() instanceof Commercial) {
+            type = "Commercial";
+        } else if(element.getStructure() instanceof Residential) {
+            type = "Residential";
+        }
+        typeDetail.setText(type);
 
         // Set up thumbnail camera intent
         this.thumbnailPhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

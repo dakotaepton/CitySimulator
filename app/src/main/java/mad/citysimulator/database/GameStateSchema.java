@@ -9,7 +9,10 @@ public class GameStateSchema {
         public static class Cols {
             public static final String SAVE_NAME = "save_name";
             public static final String CITY_NAME = "city_name";
-            //public static final String MAP = "map";
+            public static final String MAP = "map";
+            public static final String ROADS = "roads";
+            public static final String COMMERCIALS = "commercials";
+            public static final String RESIDENTIALS = "residentials";
             public static final String MAP_WIDTH = "map_width";
             public static final String MAP_HEIGHT = "map_height";
             public static final String INITIAL_MONEY = "initial_money";
